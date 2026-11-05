@@ -1,0 +1,350 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one review column; summary first, then launch order, then every change by step, then budget and rules. */
+:root {
+  --bg: #f5f8f8; --surface: #ffffff; --ink: #231f20; --muted: #5a6567; --line: #d9e2e2;
+  --accent: #127f7c; --accent-fill: #31beba; --gold: #f7c311;
+  --up: #1d7a3e; --down: #a3461d; --pause: #646a72; --neg: #6a4aa0; --wait: #8a6100; --wait-bg: #fff4cc;
+  --chip: #eef3f3;
+  --display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111515; --surface: #182020; --ink: #e6eded; --muted: #9aa6a7; --line: #2a3535;
+    --accent: #52cfca; --accent-fill: #2aa7a3; --gold: #f7c311;
+    --up: #63c58e; --down: #ef8b5e; --pause: #a6abb2; --neg: #b89be8; --wait: #f7d36b; --wait-bg: #3a3112;
+    --chip: #203030; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111515; --surface: #182020; --ink: #e6eded; --muted: #9aa6a7; --line: #2a3535;
+  --accent: #52cfca; --accent-fill: #2aa7a3; --gold: #f7c311;
+  --up: #63c58e; --down: #ef8b5e; --pause: #a6abb2; --neg: #b89be8; --wait: #f7d36b; --wait-bg: #3a3112;
+  --chip: #203030; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(26px, 4vw, 38px); line-height: 1.1; }
+h2 { font-size: 20px; }
+h3 { font-size: 15px; margin: 0; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { max-width: 68ch; color: var(--muted); font-size: 16px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; width: fit-content; }
+.pill.wait { color: var(--wait); background: var(--wait-bg); }
+.pill.wait::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.switch, .tabs, .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.switch button, .tabs button, .chips button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 12px; }
+.switch button { font-weight: 700; font-size: 15px; padding: 9px 16px; }
+.switch button[aria-pressed="true"], .tabs button[aria-pressed="true"], .chips button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--surface); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.tabs button .n, .chips button .n { font-variant-numeric: tabular-nums; opacity: 0.8; margin-left: 4px; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.note { color: var(--muted); max-width: 75ch; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tile .k { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.tile .v { font-family: var(--display); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
+.tile .s { color: var(--muted); font-size: 14px; }
+.tile.alert { border-color: var(--down); }
+.tile.alert .v { color: var(--down); }
+.tile.invest .v { color: var(--accent); }
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: step; }
+ol.steps li { counter-increment: step; display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+ol.steps li::before { content: counter(step); font-family: var(--display); font-weight: 800; font-size: 18px; color: var(--accent); line-height: 1.3; }
+ol.steps .what { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+ol.steps .what span { color: var(--muted); font-size: 14px; }
+ol.steps .cnt { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--muted); white-space: nowrap; }
+ol.steps li.manual .cnt { color: var(--wait); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.toolbar input { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); min-width: 0; width: min(280px, 100%); }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; background: var(--chip); position: sticky; top: 0; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.kw { font-weight: 700; }
+td.why { color: var(--muted); min-width: 260px; }
+td.camp { color: var(--muted); min-width: 200px; }
+.up { color: var(--up); font-weight: 700; }
+.down { color: var(--down); font-weight: 700; }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--chip); color: var(--ink); white-space: nowrap; }
+.tag.invest { background: var(--accent); color: var(--surface); }
+.tag.prove { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
+.tag.manual { background: var(--wait-bg); color: var(--wait); }
+.arrow { color: var(--muted); margin: 0 4px; }
+.empty { padding: 18px; color: var(--muted); }
+.more { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 8px; padding: 7px 12px; width: fit-content; font-weight: 700; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+details summary { cursor: pointer; font-weight: 700; }
+details[open] summary { margin-bottom: 8px; }
+details ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--muted); }
+.answer { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
+@media (max-width: 560px) {
+  ol.steps li { grid-template-columns: 26px 1fr; }
+  ol.steps .cnt { grid-column: 2; }
+  .tile .v { font-size: 22px; }
+}
+@media (prefers-reduced-motion: no-preference) { button { transition: background-color 120ms, color 120ms, border-color 120ms; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">__EYEBROW__</p>
+    <h1>__H1__</h1>
+    <p class="lede">__LEDE__</p>
+    <span class="pill wait">Plan preview — approvals and execution are recorded separately</span>
+  </header>
+
+  <div class="switch" id="prod" role="group" aria-label="Product"></div>
+
+  <section aria-labelledby="sum-h">
+    <h2 id="sum-h">What changes for this product</h2>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section aria-labelledby="order-h">
+    <h2 id="order-h">Launch order</h2>
+    <p class="note">The order matters. Scale Insights rules change bids every evening, so they come off before anything else, or they would undo the new bids within a day.</p>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section aria-labelledby="ch-h">
+    <h2 id="ch-h">Every change</h2>
+    <div class="tabs" id="tabs" role="group" aria-label="Step"></div>
+    <div class="toolbar">
+      <div class="chips" id="roles" role="group" aria-label="Bid role" hidden></div>
+      <input id="q" type="search" placeholder="Filter by keyword or campaign" aria-label="Filter by keyword or campaign">
+    </div>
+    <p class="note" id="tabnote"></p>
+    <div class="scroll"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+    <button type="button" class="more" id="more" hidden>Show all</button>
+  </section>
+
+  <section aria-labelledby="bud-h">
+    <h2 id="bud-h">What re-ranking costs</h2>
+    <p class="note" id="budnote"></p>
+    <div class="scroll"><table id="btbl"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section aria-labelledby="ans-h">
+    <h2 id="ans-h">Why a search gets its own exact campaign</h2>
+    <div class="answer">
+      <p>It has to pass all three: it is relevant to the product, it converts better than the market on the same search (index 1.1 or more, from SQP first, the search-term report second), and it has real volume (150+ searches in 12 weeks).</p>
+      <p><b>Invest</b> means the signal rests on 3 or more purchases: full budget, top of search +50%. <b>Prove first</b> means the search beats the market but on fewer than 3 purchases: $5 a day and +30% until it reaches 3 orders (then it moves up to Invest) or spends about 30 clicks with no order (then it drops to Trim). Prove first is not the same as the Test role, which is for searches with too few clicks to judge at all and bids Amazon's low.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="rules-h">
+    <h2 id="rules-h">The rulebook these changes follow</h2>
+    <div class="scroll"><table id="rtbl"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <details>
+    <summary>Sources, windows and what this doesn't cover</summary>
+    <ul id="notes"></ul>
+  </details>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const S = { product: (DATA.summary[0] || {}).asin, step: 5, role: 'all', q: '', all: false };
+try { const saved = JSON.parse(localStorage.getItem('rerank-view') || '{}'); Object.assign(S, saved, { q: '', all: false }); } catch (e) { /* storage unavailable */ }
+const save = () => { try { localStorage.setItem('rerank-view', JSON.stringify({ product: S.product, step: S.step, role: S.role })); } catch (e) { /* ignore */ } };
+
+const usd = (v, d = 2) => (v === null || v === undefined || v === '') ? '—' : '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const int = (v) => (v === null || v === undefined) ? '—' : Number(v).toLocaleString('en-US', { maximumFractionDigits: 0 });
+const pc = (v) => (v === null || v === undefined) ? '—' : (v > 0 ? '+' : '') + Math.round(v * 100) + '%';
+const share = (v) => (v === null || v === undefined) ? '—' : (v * 100).toFixed(1) + '%';
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+const shortCamp = (c) => (c || '').replace(/^.*?B0[A-Z0-9]{8}\s*-\s*/, '');
+const PROD = () => DATA.summary.find((s) => s.asin === S.product) || DATA.summary[0];
+
+const STEPS = [
+  [1, 'Scale Insights rules', 'Take the bid rules off this product\'s campaigns', 'In the Scale Insights web app. Keep Optimum Hours dayparting and the blacklist.', true],
+  [2, 'Listing price', 'Raise the price', 'Marketplace Ad Pros, listing update.', false],
+  [3, 'New exact campaign', 'Create the new exact campaigns', 'One campaign per invest search that doesn\'t have its own yet.', false],
+  [31, 'Reuse exact campaign', 'Reuse idle exact campaigns', 'The search already has an exact campaign that sat idle: it gets the approved bid, budget and boost instead of a duplicate.', false],
+  [32, 'Business invest', 'Invest inside the team\'s B2B campaigns', 'Amazon Business shoppers only: the keyword\'s bid and its campaign\'s budget and top of search, in one change.', false],
+  [33, 'New exact keyword', 'Add exact keywords to the B2B exact campaign', 'A business invest search no B2B exact keyword holds yet: added to the team\'s "B2B - Search Terms with Sales - Exact" campaign.', false],
+  [4, 'Pause keyword', 'Pause moved and duplicate keywords', 'So one campaign owns each search.', false],
+  [5, 'Bid change', 'Change keyword bids', 'Invest searches up to Amazon\'s range; everything else to breakeven.', false],
+  [51, 'Target bid change', 'Change product-target bids', 'ASIN and category targets, priced against the product\'s own ad conversion (rulebook 2b).', false],
+  [41, 'Pause target', 'Pause product targets that never sold', '22+ clicks in 90 days and no order.', false],
+  [6, 'Budget and top of search', 'Raise invest budgets and set top-of-search boosts', 'Existing invest campaigns.', false],
+  [62, 'Budget step', 'Budget steps', 'Campaigns that run out of budget at an ACOS well under breakeven get +50%; a step that stopped paying goes back.', false],
+  [61, 'Harvest default bid', 'Set the harvest starting bid', 'Scale Insights imports newly harvested exact keywords at the harvest ad group\'s default bid.', false],
+  [7, 'Negative exact', 'Add negative exacts', 'In the ad groups that paid for an invest search, so its exact campaign owns it.', false],
+  [91, 'New SB video campaign', 'Create Sponsored Brands video keywords', 'One exact keyword per invest search in the product’s video series, at its invest bid; Amazon’s bid optimisation off.', false],
+  [92, 'SB bid change', 'Change Sponsored Brands video bids', 'Keywords in the AI’s own video campaigns, priced like Sponsored Products.', false],
+  [93, 'SB pause keyword', 'Pause older Sponsored Brands copies', 'So one video campaign owns each invest search. Their history stays.', false],
+  [94, 'Scale Insights setup', 'Assign the new video campaigns in Scale Insights', 'Once they sync: the exact-owner strategy and rule 203.', true],
+  [81, 'Stop-loss review', 'Stop-loss reviews', 'Invest searches at a stop-loss checkpoint (months 3, 6, 9, 12) whose step-down could not be written, or whose organic rank and organic purchases cannot be read: your call.', false],
+  [8, null, 'Check spend after 24 hours, then weekly', 'Rank Radar ranks, SQP impression share and organic orders. At 4-6 weeks, a search that hasn\'t moved goes back to breakeven.', false],
+];
+const TABNOTE = {
+  1: 'Manual step. The Scale Insights MCP can preview and apply bid change sets but cannot change which rules are attached to a campaign.',
+  2: 'Listing price change for this product.',
+  3: 'Bids are Amazon\'s suggested median for the search (or its breakeven if higher, never above the high). Campaigns use the existing naming and portfolio.',
+  4: 'Moved keywords keep their history in the old campaign; nothing is deleted.',
+  5: 'Current bids as synced for this run. Invest searches go to Amazon\'s range; everything else to breakeven, so it pays for itself.',
+  6: 'Budgets and top-of-search boosts as read live from Amazon for this run.',
+  32: 'The campaign\'s top of search and budget are set once for every keyword in it, at the highest policy among its business invests (+50% Invest beats +30% Prove first); a budget is never lowered. The first one on a campaign cuts the team\'s +95-105% boost. Check the ad group for self-blocking negatives first, and read siteRestrictions back after the campaign update: it must still say AMAZON_BUSINESS.',
+  33: 'Check the target ad group\'s negatives for the search first: the team\'s Launch Targets rule negates a search once it has an order. Always a person\'s call.',
+  31: 'Look up each campaign\'s exact keyword (MAP sp_keywords by campaign) and check its ad group for self-blocking negatives before raising the bid.',
+  61: 'Recomputed each run from Amazon\'s suggested bids for this product.',
+  51: 'No SQP exists for a target, so each is judged against the product\'s own ad conversion: Hold at breakeven after 3 orders, Trim below 0.8x on 15+ clicks, otherwise Test (capped at the product\'s average breakeven click). Campaigns with a placement experiment in their name are left alone.',
+  41: 'Paused, not archived: the target keeps its history.',
+  81: 'Nothing changes until you decide. Stepping down means breakeven bid, top of search 0%, $5 a day.',
+  91: 'Grouped up to 8 keywords per campaign, in the product’s live "Highest Converting Search Terms" naming at the next number. Amazon gives no Sponsored Brands suggested bids, so each keyword starts at its Sponsored Products invest bid. Create in order: campaign, ad group, video ad, keywords; then set the portfolio in the Amazon Ads console.',
+  92: 'Only keywords in the AI’s own video campaigns. Older Sponsored Brands campaigns keep their bids.',
+  93: 'Older Sponsored Brands keywords for the same invest search, in campaigns where Amazon moves the bids. Paused, not deleted.',
+  94: 'Manual step in the Scale Insights web app. Exact owners get no blacklist, because Amazon applies close variants to negatives.',
+  7: 'Only ad groups that actually paid for the search in the last 90 days. Audience (AMC) campaigns are left alone. Negatives that would block another exact campaign\'s own keyword are skipped.',
+};
+Object.assign(TABNOTE, DATA.tabnotes || {});
+const COLS = {
+  'Scale Insights rules': [['Change', (r) => r.item, 'kw'], ['Now', (r) => r.current], ['After', (r) => r.new], ['Why', (r) => r.why, 'why'], ['How', (r) => r.how, 'why']],
+  'Listing price': [['Change', (r) => r.item, 'kw'], ['Now', (r) => r.current, 'num'], ['After', (r) => r.new, 'num'], ['Why', (r) => r.why, 'why'], ['How', (r) => r.how, 'why']],
+  'New exact campaign': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Bid', (r) => usd(r.new), 'num'], ['Top of search', (r) => '+' + r.tos + '% · ' + usd(r.tos_bid), 'num'], ['Budget', (r) => usd(r.budget, 0) + '/day', 'num'], ['Amazon low · median · high', (r) => r.sug_median ? usd(r.sug_low) + ' · ' + usd(r.sug_median) + ' · ' + usd(r.sug_high) : '—', 'num'], ['Evidence', (r) => r.evidence + (r.source !== 'new search' ? ' (' + r.source + ')' : ''), 'why'], ['Campaign', (r) => shortCamp(r.campaign), 'camp']],
+  'Reuse exact campaign': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Bid', (r) => usd(r.new), 'num'], ['Top of search', (r) => '+' + r.tos + '% · ' + usd(r.tos_bid), 'num'], ['Budget', (r) => usd(r.budget_now, 0) + ' → ' + usd(r.budget, 0) + '/day', 'num'], ['Amazon low · median · high', (r) => r.sug_median ? usd(r.sug_low) + ' · ' + usd(r.sug_median) + ' · ' + usd(r.sug_high) : '—', 'num'], ['Evidence', (r) => r.evidence, 'why'], ['Campaign', (r) => shortCamp(r.campaign), 'camp']],
+  'Business invest': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Bid', (r) => usd(r.current) + ' → ' + usd(r.new), 'num'], ['Top of search (campaign)', (r) => r.tos_change, 'num'], ['Budget (campaign)', (r) => r.budget_change, 'num'], ['Amazon low · median · high (B2B ad group)', (r) => r.sug_median ? usd(r.sug_low) + ' · ' + usd(r.sug_median) + ' · ' + usd(r.sug_high) : '—', 'num'], ['Evidence', (r) => r.evidence, 'why'], ['Campaign', (r) => shortCamp(r.campaign), 'camp']],
+  'New exact keyword': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Bid', (r) => usd(r.new), 'num'], ['Top of search (campaign)', (r) => r.tos_change, 'num'], ['Budget (campaign)', (r) => r.budget_change, 'num'], ['Amazon low · median · high (B2B ad group)', (r) => r.sug_median ? usd(r.sug_low) + ' · ' + usd(r.sug_median) + ' · ' + usd(r.sug_high) : '—', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Why', (r) => r.why, 'why'], ['How', (r) => r.how, 'why']],
+  'Harvest default bid': [['Change', (r) => 'Harvest ad group default bid', 'kw'], ['Now', (r) => usd(r.current), 'num'], ['New', (r) => usd(r.new), 'num'], ['Why', (r) => r.why, 'why']],
+  'Stop-loss review': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Why', (r) => r.why, 'why'], ['How', (r) => r.how, 'why']],
+  'Pause keyword': [['Keyword', (r) => r.keyword, 'kw'], ['Match', (r) => r.match], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Bid now', (r) => usd(r.current), 'num'], ['Why', (r) => r.why, 'why']],
+  'Bid change': [['Keyword', (r) => r.keyword, 'kw'], ['Match', (r) => r.match], ['Role', (r) => tag(r.role)], ['Now', (r) => usd(r.current), 'num'], ['New', (r) => bidCell(r), 'num'], ['90 days', (r) => int(r.clicks90) + ' clicks · ' + int(r.orders90) + ' orders', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Why', (r) => r.why, 'why']],
+  'Budget and top of search': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Budget', (r) => usd(r.budget_now, 0) + ' → ' + usd(r.budget, 0) + '/day', 'num'], ['Top of search', (r) => (r.tos_now ? '+' + r.tos_now + '%' : 'none') + ' → +' + r.tos + '%', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Why', (r) => r.why, 'why']],
+  'Budget step': [['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Budget', (r) => usd(r.budget_now, 0) + ' → ' + usd(r.budget, 0) + '/day', 'num'], ['14 days', (r) => int(r.capped_days) + ' of ' + int(r.window_days) + ' days out of budget · ' + int(r.orders14) + ' orders', 'num'], ['ACOS vs breakeven', (r) => (r.acos == null ? '—' : Math.round(r.acos * 100) + '%') + ' vs ' + Math.round(r.be_acos * 100) + '%', 'num'], ['Why', (r) => r.why, 'why']],
+  'New SB video campaign': [['Search', (r) => r.keyword, 'kw'], ['Role', (r) => tag(r.role)], ['Bid', (r) => usd(r.new), 'num'], ['Budget', (r) => usd(r.budget, 0) + '/day', 'num'], ['Amazon low · median · high (Sponsored Products)', (r) => r.sug_median ? usd(r.sug_low) + ' · ' + usd(r.sug_median) + ' · ' + usd(r.sug_high) : '—', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Evidence', (r) => r.evidence, 'why']],
+  'SB bid change': [['Keyword', (r) => r.keyword, 'kw'], ['Match', (r) => r.match], ['Role', (r) => tag(r.role)], ['Now', (r) => usd(r.current), 'num'], ['New', (r) => bidCell(r), 'num'], ['90 days', (r) => int(r.clicks90) + ' clicks · ' + int(r.orders90) + ' orders', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Why', (r) => r.why, 'why']],
+  'SB pause keyword': [['Keyword', (r) => r.keyword, 'kw'], ['Match', (r) => r.match], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Bid now', (r) => usd(r.current), 'num'], ['Why', (r) => r.why, 'why']],
+  'Scale Insights setup': [['Change', (r) => r.item, 'kw'], ['Now', (r) => r.current], ['After', (r) => r.new], ['Why', (r) => r.why, 'why'], ['How', (r) => r.how, 'why']],
+  'Target bid change': [['Target', (r) => r.keyword, 'kw'], ['Type', (r) => r.match], ['Role', (r) => tag(r.role)], ['Now', (r) => usd(r.current), 'num'], ['New', (r) => bidCell(r), 'num'], ['90 days', (r) => int(r.clicks90) + ' clicks · ' + int(r.orders90) + ' orders', 'num'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Why', (r) => r.why, 'why']],
+  'Pause target': [['Target', (r) => r.keyword, 'kw'], ['Type', (r) => r.match], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Bid now', (r) => usd(r.current), 'num'], ['Why', (r) => r.why, 'why']],
+  'Negative exact': [['Search', (r) => r.keyword, 'kw'], ['Campaign', (r) => shortCamp(r.campaign), 'camp'], ['Ad group', (r) => r.ad_group || '—', 'camp'], ['Paid for it, 90 days', (r) => int(r.clicks90) + ' clicks · ' + int(r.orders90) + ' orders · ' + usd(r.spend90), 'num'], ['Why', (r) => r.why, 'why']],
+};
+function tag(role) {
+  const t = el('span', 'tag' + (role === 'Invest' ? ' invest' : role === 'Prove first' ? ' prove' : ''), role || '—');
+  return t;
+}
+function bidCell(r) {
+  const s = el('span', r.change > 0 ? 'up' : 'down', usd(r.new) + ' (' + pc(r.change) + ')');
+  return s;
+}
+function cellify(td, v) { if (v instanceof Node) td.appendChild(v); else td.textContent = v === null || v === undefined || v === '' ? '—' : String(v); }
+
+function renderProducts() {
+  const box = document.getElementById('prod'); box.replaceChildren();
+  DATA.summary.forEach((s) => {
+    const b = el('button', null, s.product + ' · ' + s.asin); b.type = 'button'; b.dataset.v = s.asin;
+    b.setAttribute('aria-pressed', String(s.asin === S.product)); box.appendChild(b);
+  });
+}
+function renderTiles() {
+  const p = PROD(), box = document.getElementById('tiles'); box.replaceChildren();
+  const tiles = [
+    ['invest', 'Invest searches', int(p.invest), 'beat the market with real volume; each gets one exact campaign'],
+    ['invest', 'Spend on invest searches', usd(p.invest_plan_day, 0) + '/day', 'up from ' + usd(p.invest_now_day, 0) + '/day over the last 90 days; budgets allow up to ' + usd(p.invest_budget_day, 0) + '/day if the searches take it'],
+    ['alert', 'Breakeven click', usd(p.breakeven_click_avg), 'profit per order ' + usd(p.profit_per_unit) + ' × average ad conversion ' + (p.asin_ad_cvr * 100).toFixed(1) + '%; harvest starts at ' + usd(p.harvest_default_bid)],
+    ['', 'Changes', int(p.new_campaigns + p.pauses + p.bid_changes + p.budgets + p.negatives), p.new_campaigns + ' new campaigns · ' + p.bid_changes + ' bids (' + p.bids_up + ' up, ' + p.bids_down + ' down) · ' + p.pauses + ' pauses · ' + p.budgets + ' budgets · ' + p.negatives + ' negatives'],
+    ['', 'Planned investment', usd(-p.invest_net_month, 0) + '/month', 'what the invest searches cost beyond the profit they bring back, for about ' + int(p.invest_orders_month) + ' orders a month; everything else bids breakeven'],
+  ];
+  tiles.forEach(([cls, k, v, s]) => {
+    const t = el('div', 'tile' + (cls ? ' ' + cls : '')); t.append(el('span', 'k', k), el('span', 'v', v), el('span', 's', s)); box.appendChild(t);
+  });
+}
+function rows() { return DATA.changes.filter((r) => r.asin === S.product); }
+function renderSteps() {
+  const box = document.getElementById('steps'); box.replaceChildren();
+  const R = rows();
+  STEPS.forEach(([n, type, title, sub, manual]) => {
+    if (['Listing price', 'Reuse exact campaign', 'Business invest', 'New exact keyword', 'Harvest default bid', 'Stop-loss review', 'Scale Insights rules', 'New SB video campaign', 'SB bid change', 'SB pause keyword', 'Scale Insights setup'].includes(type) && !R.some((r) => r.type === type)) return;
+    const li = el('li', manual ? 'manual' : '');
+    const w = el('div', 'what'); w.append(el('b', null, title), el('span', null, sub));
+    const c = type ? R.filter((r) => r.type === type).length : null;
+    li.append(w, el('span', 'cnt', manual ? 'manual step' : c === null ? 'ongoing' : c + (c === 1 ? ' change' : ' changes')));
+    box.appendChild(li);
+  });
+}
+function renderTabs() {
+  const box = document.getElementById('tabs'); box.replaceChildren();
+  const R = rows();
+  STEPS.filter(([n, type]) => type && R.some((r) => r.type === type)).forEach(([n, type, title]) => {
+    const b = el('button', null, type); b.type = 'button'; b.dataset.v = String(n);
+    b.appendChild(el('span', 'n', '(' + R.filter((r) => r.type === type).length + ')'));
+    b.setAttribute('aria-pressed', String(n === S.step)); box.appendChild(b);
+  });
+  if (!R.some((r) => r.type === (STEPS.find(([n]) => n === S.step) || [])[1])) S.step = 5;
+}
+function renderRoles(list) {
+  const box = document.getElementById('roles');
+  const show = S.step === 5; box.hidden = !show; box.replaceChildren();
+  if (!show) return;
+  const roles = ['all', 'Invest', 'Prove first', 'Hold', 'Trim', 'Test', 'Discovery', 'Low bid'].filter((r) => r === 'all' || list.some((x) => x.role === r));
+  roles.forEach((r) => {
+    const b = el('button', null, r === 'all' ? 'All roles' : r); b.type = 'button'; b.dataset.v = r;
+    b.appendChild(el('span', 'n', '(' + (r === 'all' ? list.length : list.filter((x) => x.role === r).length) + ')'));
+    b.setAttribute('aria-pressed', String(r === S.role)); box.appendChild(b);
+  });
+}
+function renderTable() {
+  const type = (STEPS.find(([n]) => n === S.step) || STEPS.find(([n]) => n === 5))[1];
+  let list = rows().filter((r) => r.type === type);
+  renderRoles(list);
+  if (S.step === 5 && S.role !== 'all') list = list.filter((r) => r.role === S.role);
+  const q = S.q.trim().toLowerCase();
+  if (q) list = list.filter((r) => ((r.keyword || '') + ' ' + (r.campaign || '') + ' ' + (r.item || '')).toLowerCase().includes(q));
+  if (type === 'Bid change' || type === 'Target bid change') list.sort((a, b) => (b.spend90 || 0) - (a.spend90 || 0));
+  if (type === 'Negative exact') list.sort((a, b) => (b.spend90 || 0) - (a.spend90 || 0));
+  document.getElementById('tabnote').textContent = TABNOTE[S.step] || '';
+  const cols = COLS[type];
+  const thead = document.querySelector('#tbl thead'), tbody = document.querySelector('#tbl tbody');
+  const hr = el('tr'); cols.forEach(([h, , cls]) => hr.appendChild(el('th', cls === 'num' ? 'num' : '', h))); thead.replaceChildren(hr);
+  tbody.replaceChildren();
+  const LIM = 60, shown = S.all ? list : list.slice(0, LIM);
+  if (!shown.length) { const tr = el('tr'); const td = el('td', 'empty', 'Nothing here for this filter.'); td.colSpan = cols.length; tr.appendChild(td); tbody.appendChild(tr); }
+  shown.forEach((r) => {
+    const tr = el('tr');
+    cols.forEach(([, f, cls]) => { const td = el('td', cls || ''); cellify(td, f(r)); tr.appendChild(td); });
+    if (r.keyword_id || r.campaign_id) tr.title = [r.campaign_id && 'campaign ' + r.campaign_id, r.ad_group_id && 'ad group ' + r.ad_group_id, r.keyword_id && 'keyword ' + r.keyword_id].filter(Boolean).join(' · ');
+    tbody.appendChild(tr);
+  });
+  const more = document.getElementById('more');
+  more.hidden = S.all || list.length <= LIM; more.textContent = 'Show all ' + list.length;
+}
+function renderBudget() {
+  const p = PROD();
+  const list = DATA.rerank.filter((r) => r.asin === S.product).sort((a, b) => b.spend - a.spend);
+  document.getElementById('budnote').textContent = 'To re-rank, the invest searches need to win a real share of their clicks. This estimates what winning about 1 in 10 clicks on each would cost at the planned bids, capped by each campaign\'s daily budget. Together: about ' + usd(p.invest_plan_day, 0) + ' a day, against ' + usd(p.invest_now_day, 0) + ' a day over the last 90 days. Search volumes and clicks are monthly, from SQP; conversion is our own, shrunk toward the market and capped at 1.5 times it.';
+  const cols = [['Search', (r) => r.keyword + (r.label ? ' · ' + r.label : ''), 'kw'], ['Role', (r) => tag(r.role)], ['Searches / month', (r) => int(r.month_searches), 'num'], ['Clicks / month', (r) => int(r.month_clicks), 'num'], ['Our click share now', (r) => share(r.our_click_share), 'num'], ['Ad spend now / month', (r) => usd(r.ad_spend_now, 0), 'num'], ['Bid · top of search', (r) => usd(r.bid) + ' · +' + r.tos + '%', 'num'], ['Budget', (r) => usd(r.budget, 0) + '/day', 'num'], ['Spend to win 1 in 10 clicks', (r) => usd(r.spend, 0) + (r.capped ? ' (budget-capped)' : ''), 'num'], ['Orders / month', (r) => int(r.orders), 'num'], ['Profit after ads / month', (r) => usd(r.net, 0), 'num']];
+  const thead = document.querySelector('#btbl thead'), tbody = document.querySelector('#btbl tbody');
+  const hr = el('tr'); cols.forEach(([h, , cls]) => hr.appendChild(el('th', cls === 'num' ? 'num' : '', h))); thead.replaceChildren(hr);
+  tbody.replaceChildren(...list.map((r) => { const tr = el('tr'); cols.forEach(([, f, cls]) => { const td = el('td', cls || ''); cellify(td, f(r)); tr.appendChild(td); }); return tr; }));
+}
+function renderRules() {
+  const cols = [['Role', (r) => r.role, 'kw'], ['Which searches', (r) => r.which, 'why'], ['Bid', (r) => r.bid, 'why'], ['Campaign and budget', (r) => r.rule, 'why'], ['Moves on when', (r) => r.exit, 'why']];
+  const thead = document.querySelector('#rtbl thead'), tbody = document.querySelector('#rtbl tbody');
+  const hr = el('tr'); cols.forEach(([h]) => hr.appendChild(el('th', '', h))); thead.replaceChildren(hr);
+  tbody.replaceChildren(...DATA.rules.map((r) => { const tr = el('tr'); cols.forEach(([, f, cls]) => { const td = el('td', cls || ''); cellify(td, f(r)); tr.appendChild(td); }); return tr; }));
+  const ul = document.getElementById('notes'); ul.replaceChildren(...DATA.notes.map((n) => el('li', null, n)));
+}
+function render() { renderProducts(); renderTiles(); renderSteps(); renderTabs(); renderTable(); renderBudget(); }
+
+document.getElementById('prod').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; S.product = b.dataset.v; S.all = false; S.role = 'all'; save(); render(); });
+document.getElementById('tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; S.step = Number(b.dataset.v); S.all = false; S.role = 'all'; save(); renderTabs(); renderTable(); });
+document.getElementById('roles').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; S.role = b.dataset.v; S.all = false; save(); renderTable(); });
+document.getElementById('q').addEventListener('input', (e) => { S.q = e.target.value; S.all = false; renderTable(); });
+document.getElementById('more').addEventListener('click', () => { S.all = true; renderTable(); });
+if (!DATA.summary.some((s) => s.asin === S.product)) S.product = DATA.summary[0].asin;
+render(); renderRules();
+</script>

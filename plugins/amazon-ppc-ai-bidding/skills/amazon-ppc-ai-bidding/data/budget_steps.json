@@ -1,0 +1,103 @@
+{
+ "steps": [
+  {
+   "campaign_id": "900000000000018",
+   "campaign": "20 Assorted Birthday Cards (5X7) - B0SAMP0015 - Search terms w sales - Broad - 1",
+   "asin": "B0SAMP0015",
+   "from": 3.0,
+   "to": 10.0,
+   "date": "2026-10-20",
+   "by": "Kim",
+   "why": "Budget headroom check 2026-10-20: out of budget most days at an ACOS under breakeven (logs/2026-10-20-budget-headroom-check.md)",
+   "ref": "MarketplaceAdPros change set 50e08b53"
+  },
+  {
+   "campaign_id": "900000000000019",
+   "campaign": "Assorted Gratitude Cards - B0SAMP0024 - B2B - Search Terms with Sales - Phrase - 1",
+   "asin": "B0SAMP0024",
+   "from": 10.0,
+   "to": 20.0,
+   "date": "2026-10-20",
+   "by": "Kim",
+   "why": "Budget headroom check 2026-10-20: out of budget most days at an ACOS under breakeven (logs/2026-10-20-budget-headroom-check.md)",
+   "ref": "MarketplaceAdPros change set 50e08b53"
+  },
+  {
+   "campaign_id": "900000000000020",
+   "campaign": "20 Assorted Birthday Cards (5X7) - B0SAMP0015 - Search terms w sales - Phrase - 1",
+   "asin": "B0SAMP0015",
+   "from": 3.0,
+   "to": 10.0,
+   "date": "2026-10-20",
+   "by": "Kim",
+   "why": "Budget headroom check 2026-10-20: out of budget most days at an ACOS under breakeven (logs/2026-10-20-budget-headroom-check.md)",
+   "ref": "MarketplaceAdPros change set 50e08b53"
+  },
+  {
+   "campaign_id": "900000000000021",
+   "campaign": "120 Animal Bookmarks 6x2 - B0SAMP0022 - Search terms w sales - Broad - 1",
+   "asin": "B0SAMP0022",
+   "from": 5.0,
+   "to": 8.0,
+   "date": "2026-10-27",
+   "by": "weekly run",
+   "why": "ran out of budget on 13 of 14 days at 24% ACOS against a 37% breakeven (11 orders): step $5 -> $8/day, judged again in 7 days",
+   "ref": "B0SAMP0022-2026-10-27 Budget step:900000000000021::"
+  },
+  {
+   "campaign_id": "900000000000019",
+   "campaign": "Assorted Gratitude Cards - B0SAMP0024 - B2B - Search Terms with Sales - Phrase - 1",
+   "asin": "B0SAMP0024",
+   "from": 20.0,
+   "to": 10.0,
+   "date": "2026-11-02",
+   "by": "weekly run",
+   "why": "since its step on 2026-10-20 it ran at 47% ACOS on 114 clicks, above the 38% breakeven: back to $10/day",
+   "ref": "B0SAMP0024-2026-11-02 Budget step:900000000000019::"
+  },
+  {
+   "campaign_id": "900000000000022",
+   "campaign": "100 Birthday Cards 4x6 - B0SAMP0014 - Launch Targets - Phrase - 5",
+   "asin": "B0SAMP0014",
+   "from": 11.0,
+   "to": 17.0,
+   "date": "2026-11-04",
+   "by": "weekly run",
+   "why": "ran out of budget on 5 of 14 days at 23% ACOS against a 33% breakeven (14 orders): step $11 -> $17/day, judged again in 7 days",
+   "ref": "B0SAMP0014-2026-11-04-r184 Budget step:900000000000022::"
+  },
+  {
+   "campaign_id": "900000000000023",
+   "campaign": "100 Birthday Cards 4x6 - B0SAMP0014 - Search terms w sales (LI) - Exact - 3",
+   "asin": "B0SAMP0014",
+   "from": 7.0,
+   "to": 11.0,
+   "date": "2026-11-04",
+   "by": "weekly run",
+   "why": "ran out of budget on 7 of 14 days at 19% ACOS against a 33% breakeven (12 orders): step $7 -> $11/day, judged again in 7 days",
+   "ref": "B0SAMP0014-2026-11-04 Budget step:900000000000023::"
+  },
+  {
+   "campaign_id": "900000000000024",
+   "campaign": "50 Watercolor Thank You Cards - B0SAMP0053 - Exact SKC - thank you cards with envelopes bulk",
+   "asin": "B0SAMP0053",
+   "from": 4.0,
+   "to": 10,
+   "date": "2026-11-04",
+   "by": "weekly run",
+   "why": "Invest campaign: $10/day so the search can take the clicks it needs; top of search converts best on these products.",
+   "ref": "B0SAMP0053-2026-11-04 Budget and top of search:900000000000024::thank you cards with envelopes bulk"
+  },
+  {
+   "campaign_id": "900000000000025",
+   "campaign": "50 Vibrant KG Posters - B0SAMP0054 - Auto - $0.30 down only",
+   "asin": "B0SAMP0054",
+   "from": 3.0,
+   "to": 5.0,
+   "date": "2026-11-05",
+   "by": "weekly run",
+   "why": "ran out of budget on 6 of 13 days at 24% ACOS against a 30% breakeven (4 orders): step $3 -> $5/day, judged again in 7 days",
+   "ref": "B0SAMP0054-2026-11-04-r184 Budget step:900000000000025::"
+  }
+ ]
+}

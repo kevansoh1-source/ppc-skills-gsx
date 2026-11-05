@@ -1,0 +1,788 @@
+{
+  "_note": "Shared settings for AI-managed PPC (YourBrand, Amazon US). Thresholds are the rulebook signed off 2026-10-17; change them here, not in the scripts.",
+  "amazon_ads": {
+    "integration_id": "00000000-0000-4000-8000-900000000001",
+    "account_id": "00000000-0000-4000-8000-900000000002",
+    "profile": "US 9000000000000003"
+  },
+  "selling_partner": {
+    "account_id": "00000000-0000-4000-8000-900000000004",
+    "seller_id": "AEXAMPLESELLER",
+    "note": "Use the 'YourBrand US' row with country US; a second row shows country BR, don't use it."
+  },
+  "data_dir": null,
+  "_data_dir_note": "null = <skill>/data, inside the your-ppc-repo repo: git is the shared folder. Pull before a run, commit and push the product file after it, so every teammate works from the same invest log.",
+  "portfolio_id": "90000000000005",
+  "portfolio_name": "1. Normal Ads - Normal Bids",
+  "scale_insights": {
+    "blacklist_keep": [
+      "yourbrand"
+    ],
+    "_blacklist_keep_note": "Searches the blacklist rescue (scripts/blacklist_rescue.py) never takes off the blacklist, even when they are on Invest or Prove first: the brand search stays organic only (Kim, 2026-10-20). Added 2026-10-21. Since 2026-10-26 (decision 141, rulebook 2f) the planner reads it as the brand: any search holding one of these words is never invested in, raised, whitelisted or freed from the blacklist (plan.py demote_brand and brand_sweep, blacklist_rescue.brand_search), after the rollout run launched \"yourbrand birthday cards\" for 14 minutes.",
+    "_note": "Shared strategies for AI-managed products (created for the bookmarks pilot, renamed with plain-English numbered names 2026-10-17; names in 'names'). No bid rules except the reduce-only 202 Brake on 101, 111 and 121.",
+    "names": {
+      "302489": "101 Keyword ads - block wasted searches, brake non-sellers, optimum hours",
+      "302490": "102 Low-bid and audience keyword ads - block wasted searches, optimum hours",
+      "302497": "103 Exact keyword owners - never blocked, optimum hours only",
+      "302498": "104 Harvest - add new selling searches as exact keywords",
+      "302499": "105 Harvest at 12% - add new selling searches as exact keywords",
+      "302491": "111 Auto ads - block wasted searches and products, brake, optimum hours",
+      "302492": "121 Product-target ads - drop non-sellers, add sellers, brake, optimum hours",
+      "302493": "131 Display ads - add selling products, optimum hours",
+      "302494": "141 Brand video keyword ads - block wasted searches, optimum hours",
+      "302495": "142 Brand video low-bid and audience ads - block wasted searches, optimum hours",
+      "302496": "143 Brand video product ads - add selling products, optimum hours",
+      "21246": "203 Optimum Hours, weekends on with bids -20%",
+      "21051": "201 Harvest: 1+ order and 9%+ conversion - add as exact at the ad group bid",
+      "21052": "204 Harvest: 1+ order and 12%+ conversion - add as exact at the ad group bid",
+      "21053": "205 Import ASINs with orders - max $0.35 (AI products): strategy 121's product-target import since 2026-10-19 (copy of shared rule 10200, which stays at $0.67 for products on Scale Insights rules)",
+      "11154": "202 Brake: 26+ clicks and no orders in 30 days - bid down 30%, never below $0.10"
+    },
+    "brake_rule": {
+      "id": 11154,
+      "criteria_profile": 800277,
+      "on_strategies": [
+        302489,
+        302491,
+        302492
+      ],
+      "settings": "% adjustment -30, min bid 0.10, days to analyse 30, days to ignore 2, days to observe automation changes 7"
+    },
+    "strategies": {
+      "keyword_no_bid_rules": 302489,
+      "keyword_low_bids_amc_no_bid_rules": 302490,
+      "auto_no_bid_rules": 302491,
+      "product_targeting_no_bid_rules": 302492,
+      "display_no_bid_rules": 302493,
+      "video_no_bid_rules": 302494,
+      "video_low_bids_amc_no_bid_rules": 302495,
+      "video_product_targets_no_bid_rules": 302496,
+      "exact_skc_owner": 302497,
+      "harvest_exact_import": 302498,
+      "harvest_exact_import_12": 302499
+    },
+    "import_rules_by_gate": {
+      "0.09": 21051,
+      "0.12": 21052
+    },
+    "criteria_profiles": {
+      ">=1 Order & 9% Conversion": 800213,
+      ">=1 Order & 12% Conversion (AI harvest gate)": 800278,
+      ">= 1 Order": 205000,
+      "26+ clicks, 0 orders (AI brake)": 800277
+    },
+    "nightly_run_utc": "about 18:10-18:30"
+  },
+  "_scope_note": "The dashboard's optimisation map: every lever of a product's ads and who owns it at each stage. Status: ai = optimised by the weekly AI run; guardrail = Scale Insights automation; fixed = held as set; not_yet = not optimised yet; si = still on Scale Insights rules (lined-up products); none = not shown. 'types' are the plan's change types that count as a change to the lever; a lever with an 'owner_kind' (b2b: 'business') counts only the rows carrying that owner_kind, since it shares its types with another lever. Per-product exceptions go in the product file's 'scope' (lever id -> {status, note}).",
+  "scope": [
+    {
+      "id": "invest",
+      "label": "Invest searches",
+      "what": "Searches that beat the market get their own exact campaign: Amazon's suggested median bid (or breakeven if higher), a top-of-search boost and a budget.",
+      "ai": "ai",
+      "queued": "none",
+      "types": [
+        "New exact campaign",
+        "Reuse exact campaign",
+        "Budget and top of search"
+      ]
+    },
+    {
+      "id": "keyword_bids",
+      "label": "Every other keyword bid",
+      "what": "Priced to its role each week (defend, hold, trim, test, discovery); duplicates of invest searches paused.",
+      "si_what": "Scale Insights bid rules: target ACOS, inch-ups and pauses.",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "Bid change",
+        "Pause keyword"
+      ]
+    },
+    {
+      "id": "negatives",
+      "label": "Negatives",
+      "what": "Funnel negatives so one campaign owns each search, and the weekly negative audit, applied after its approval table.",
+      "si_what": "Scale Insights negative rules; the negative audit as before.",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "Negative exact",
+        "Archive negative"
+      ]
+    },
+    {
+      "id": "harvest_bid",
+      "label": "Harvest starting bid",
+      "what": "The harvest ad group's default bid, from Amazon's suggested bids for the product.",
+      "ai": "ai",
+      "queued": "none",
+      "types": [
+        "Harvest default bid",
+        "Harvest setup"
+      ]
+    },
+    {
+      "id": "stop_loss",
+      "label": "Stop-loss on invest searches",
+      "what": "4-week review of organic rank, impression share and organic purchases; 8-week keep-or-stop decision.",
+      "ai": "ai",
+      "queued": "none",
+      "types": [
+        "Stop-loss review"
+      ]
+    },
+    {
+      "id": "si_negatives",
+      "label": "Auto-negatives and blacklist",
+      "what": "Scale Insights negates searches with 17+ clicks and no orders, low-CTR and 0-conversion terms; the product blacklist keeps broad, phrase and auto off the searches the exact campaigns own.",
+      "si_what": "Scale Insights auto-negatives and the product blacklist (the same after onboarding).",
+      "ai": "guardrail",
+      "queued": "si",
+      "types": [
+        "Scale Insights rules",
+        "Scale Insights setup"
+      ]
+    },
+    {
+      "id": "brake",
+      "label": "202 Brake",
+      "what": "Bid −30% after 26+ clicks and no orders in 30 days, at most once a week, never below $0.10 (keyword, auto and product-target ad groups).",
+      "ai": "guardrail",
+      "queued": "none"
+    },
+    {
+      "id": "harvest_import",
+      "label": "201 Harvest import",
+      "what": "New searches with 1+ order and 9%+ conversion come in as exact keywords at the harvest starting bid.",
+      "si_what": "Scale Insights import rules, at their own bids (often a copy of the search’s past CPC).",
+      "ai": "guardrail",
+      "queued": "si"
+    },
+    {
+      "id": "hours",
+      "label": "Hours (dayparting)",
+      "what": "Rule 203 (21246): Mon–Fri 06:00–21:59; Sat–Sun 05:00–21:59 at −20% bids since 2026-10-31 (Kim, decision 174; −40% from 2026-10-26, decision 133; −15% until then). Standard onboarding replaces legacy direct product schedules on every AI-controlled SP/SB/SD group, including low-bid and audience groups; preserve shared-campaign exclusions and explicitly approved schedule exceptions (Kim, 2026-10-24).",
+      "si_what": "Rule 203 (weekends on at −20% bids since 2026-10-31; −40% from 2026-10-26; −15% from 2026-10-17) or the product’s own schedule with weekends opened at −15%; set 2026-10-17 for the 10 products this repo handles.",
+      "ai": "fixed",
+      "queued": "si"
+    },
+    {
+      "id": "price",
+      "label": "Price",
+      "what": "Changed only by a decision, never by the weekly run.",
+      "ai": "fixed",
+      "queued": "fixed",
+      "types": [
+        "Listing price"
+      ]
+    },
+    {
+      "id": "other_budgets",
+      "label": "Budgets and placements of other campaigns",
+      "what": "Non-invest campaigns keep their top-of-search settings. Budget steps since 2026-10-20: a campaign that runs out of budget at an ACOS well under breakeven gets +50% (a person approves), and a step that stops paying goes back.",
+      "si_what": "Budgets as set, plus Scale Insights budget rules where assigned (e.g. weekends −25%).",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "Budget step"
+      ]
+    },
+    {
+      "id": "audience",
+      "label": "Low-bid and audience (AMC) campaigns",
+      "what": "Priced as one measured multiplier per audience later; until then left as they are.",
+      "si_what": "Scale Insights rules, as before.",
+      "ai": "fixed",
+      "queued": "si"
+    },
+    {
+      "id": "b2b",
+      "label": "Amazon Business (B2B) campaigns",
+      "what": "Priced weekly on the B2B campaigns' own conversion, with every role a consumer keyword can take: a B2B keyword that converts well is invested in inside the team's B2B campaigns (its bid, and its campaign's budget and top of search at the standing policy), its B2B copies paused and its funnel negatives kept inside the B2B ad groups; never paused or negated as copies of consumer campaigns. Business rows follow the same lanes as consumer rows, judged on the B2B keyword's own evidence. The team builds the B2B campaigns; their ad groups come off Scale Insights bid rules once a person approves.",
+      "si_what": "Scale Insights rules, as before.",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "Business invest",
+        "Bid change",
+        "Pause keyword",
+        "Negative exact",
+        "New exact keyword",
+        "Stop-loss review",
+        "Scale Insights rules"
+      ],
+      "owner_kind": "business"
+    },
+    {
+      "id": "product_targets",
+      "label": "Product-target bids",
+      "what": "ASIN and category targets in Sponsored Products, priced each week against the product's own ad conversion: Test (capped at the product's average breakeven click until 3 orders), Hold at breakeven, Trim, or Pause after 22 clicks with no order. Campaigns with a placement experiment in their name are left alone.",
+      "si_what": "Scale Insights bid rules, as before.",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "Target bid change",
+        "Pause target"
+      ]
+    },
+    {
+      "id": "auto_pt",
+      "label": "Auto-targeting groups",
+      "what": "Not priced by the weekly run yet; only the 202 Brake watches them.",
+      "si_what": "Scale Insights bid rules, as before.",
+      "ai": "not_yet",
+      "queued": "si"
+    },
+    {
+      "id": "sb",
+      "label": "Sponsored Brands",
+      "what": "Video campaigns: each invest search gets one exact keyword in the product's 'Highest Converting Search Terms' video series, at its invest bid, priced weekly; Amazon's bid optimisation off on these. Older SB copies of an invest search are paused; other older SB campaigns are left as they are.",
+      "si_what": "Scale Insights bid rules, as before.",
+      "ai": "ai",
+      "queued": "si",
+      "types": [
+        "New SB video campaign",
+        "SB bid change",
+        "SB pause keyword"
+      ]
+    },
+    {
+      "id": "sd",
+      "label": "Sponsored Display",
+      "what": "Not priced by the weekly run yet.",
+      "si_what": "Scale Insights bid rules, as before.",
+      "ai": "not_yet",
+      "queued": "si"
+    },
+    {
+      "id": "listing",
+      "label": "Listing, images and A+",
+      "what": "Outside this workflow (the listing skills in the YourBrand repo).",
+      "ai": "not_yet",
+      "queued": "not_yet"
+    }
+  ],
+  "thresholds": {
+    "prior_clicks": 10,
+    "market_prior_clicks": 20,
+    "trusted_min_clicks": 10,
+    "trusted_min_ad_orders": 3,
+    "index_invest": 1.1,
+    "index_hold": 0.8,
+    "index_pause": 0.5,
+    "invest_min_volume": 150,
+    "invest_min_purchases": 3,
+    "defend_impression_share": 0.1,
+    "defend_organic_share": 0.5,
+    "trim_min_clicks": 15,
+    "pause_min_clicks": 30,
+    "trim_factor": 0.7,
+    "test_floor_bid": 0.35,
+    "test_default_market_cvr": 0.1,
+    "leave_bid_cvr": 0.1,
+    "no_suggestion_multiplier": 1.5,
+    "trim_min_bid": 0.1,
+    "slip_step_down": true,
+    "rank_max_monthly_searches": 3000,
+    "rank_cap_strong_index": 1.3,
+    "rank_cap_strong_max": 4000,
+    "_rank_cap_decision_189_note": "Kim, 2026-11-05 about 08:39 SGT, decision 189 (card: '3,000 cap; index 1.3+ to 4,000'): the cap is 3,000 searches a month and every source is read at its own number (the 0.8 DataDive conversion, rank_cap_datadive_ratio, is gone: Kim, 'it confuses teammates anyway'): on the week's runs to Nov 5, 81 searches with both an SQP and a DataDive figure read SQP / DataDive median 1.02 (middle half 0.83 to 1.28), not the 0.8 of Nov 4, so 2,400 SQP had become about 2,400 DataDive, under the 3,000 Kim picked. A search with a trusted index of rank_cap_strong_index (1.3) or more may be a rank search up to rank_cap_strong_max (4,000) a month, or the product's own rank_max_monthly_searches when that is higher: it converts well enough that each click pays back faster. The slip step-down still takes one out when its index falls under 0.8.",
+    "_rank_max_monthly_searches_note": "Kim, 2026-11-04 SGT, decision 182 (card: 'Cap new and existing'): a consumer search with more than this many searches a month (SQP volume / observed days x 30; the launch list or SoldScope when SQP has none) is never a rank search: no Invest, no Prove first. It bids as Defend, at its breakeven, and a logged invest search over it steps down at the next run (the same step-down as slip_step_down). Evidence: 263 invest searches on 66 AI products, Oct 2026, rank at start vs latest: 500-2,000 DataDive monthly searches 41 up / 28 down, 2,000-10,000 15 / 18, over 10,000 7 / 10 (not invested: even). Set to 1,600 (about 2,000 on DataDive) at first, raised the same evening to 2,400 (about 3,000 on DataDive; Kim's card pick '3,000 DataDive (2,400 SQP)') after a fresh pull to Nov 4 split the mid band: 2,000-3,000 invested 8 up / 3 down against 5 / 15 not invested, 3,000-5,000 6 / 8 (SQP reads ~0.8x DataDive). Cross-checked (Kim, 2026-11-04: 'aggregate monthly searches using datadive / soldscope as well'): the cap reads the highest of the search's own monthly figure, DataDive's Rank Radar volume in the product file's rank block x rank_cap_datadive_ratio (0.8), and SoldScope's monthly volume when the run has soldscope_volume.json. Not for B2B searches or a seasonal rank build. null turns it off. Since 2026-11-05 (decision 189) the cap is 3,000 and DataDive is read at its own number (no 0.8): see _rank_cap_decision_189_note.",
+    "_slip_step_down_note": "Kim, 2026-11-04 SGT, decision 182 ('i agree with this'): a logged invest search whose own record says Trim (trusted index under index_hold, 0.8, on trim_min_clicks, 15, or more of our clicks) steps down at that run, as the stop-loss step-down does (keyword at no more than breakeven, top of search 0%, the Hold budget), instead of waiting for its month-3 checkpoint. Not for a seasonal rank build. false turns it off.",
+    "non_rank_bid_factor": 1.0,
+    "_non_rank_bid_factor_note": "Kim, 2026-10-26 about 00:30 SGT, decision 139 (card: '85% of breakeven'): a keyword or target that is not a rank search (Hold, Defend, Test, Discovery and the audience cap; Sponsored Products, Sponsored Brands and Sponsored Display, consumer and business) bids this share of its breakeven click, so every click aims for some profit. Rank (Invest, Prove first) bids, Trim (trim_factor) and the low Leave bid are unchanged. A seasonal product in season keeps breakeven (docs/seasonal-bidding.md). 1 turns it off. Kim, 2026-10-28 SGT, decision 157 ('#4 ... implement': 'non-rank bids at 100% of breakeven instead of 85%'): set to 1, so non-rank keywords and targets bid their full breakeven click again. Since 2026-10-31 (decision 175) only the top-10 rule (top10_factor 0.75) and Trim (70%) bid an ordinary keyword under breakeven: the organic-share brake and the efficiency guard's step are gone (the leak check pauses no-order keywords instead).",
+    "stop_loss_weeks": [
+      4,
+      6
+    ],
+    "_stop_loss_weeks_note": "Since 2026-10-26 (decision 142) only the business stop-loss (business.py: B2B orders and ACOS) reads these weeks; a seasonal rank build reads its season block's own weeks (2 and 4). The consumer evergreen stop-loss reads stop_loss_months.",
+    "stop_loss_months": [
+      3,
+      6,
+      9,
+      12
+    ],
+    "_stop_loss_months_note": "Kim, 2026-10-26 about 10:08-10:17 SGT, decision 142: 'count the organic rank and organic sales only, its correct. but ranking horizon is now around 10 to 12 months on amazon.. not just 4-6 weeks'. An evergreen invest search is judged once at each of these months of investing (day 91, 182, 274, 365), on organic rank (Rank Radar) and organic purchases (SQP purchases less ad orders) only, against its reading at the last checkpoint it passed (invest_log checkpoint_*), else its start; no gain on either steps it down to Hold. SQP impression share no longer counts (it includes paid impressions). Replaced stop_loss_weeks [4, 6] for consumer searches."
+  },
+  "organic_share": {
+    "_note": "Kim, 2026-10-26 11:07-11:09 SGT, decision 143: \"how can we build this while maintaining our goal of ranking and 50% organic units to 50% ppc units\"; the proposal (organic-share brake at 50% / 70%, top-10 rule from Rank Radar with SQP as the fallback, weekly efficiency guard, Rank Radars for every invest search) answered \"thats fine\". scripts/organic_share.py. Never a rank bid, a rank budget or any campaign budget; never in season; the brake on mature products only. Input: sales_daily.json (references/data-pull.md). Changed 2026-10-31 (Kim, decision 175: \"agreed on number one to drop the under-half organic cut. Just let ordinary keywords stay at 100% of break-even\"; \"you can turn it into a leak check\"; \"when we are already ranked top 10 for the keyword ... we can bid 75% of the break-even, but continue investing in the ranking and the high-index keywords\"): the organic-share brake is gone (brake_factor removed: the share is reported only); top10_factor 0.7 -> 0.75; the weekly efficiency guard became the leak check: it reads the product's ordinary (non-rank, non-B2B) Sponsored Products campaigns' last leak_days of settled campaign days (campaign_days.json, the newest budget_headroom settle_days left out) and, when their orders x profit_per_unit - spend lose more than leak_tolerance, pauses the ordinary keywords with leak_pause_clicks+ clicks and no orders in 90 days. No bid step-down, no hold on Prove-first launches, never a rank campaign or a budget (guard_days, guard_tolerance, guard_step, guard_floor, allowance_floor_day and guard_pause_clicks retired).",
+    "enabled": true,
+    "target_share": 0.5,
+    "share_days": 28,
+    "top10_rank": 10,
+    "top10_days": 14,
+    "top10_factor": 0.75,
+    "top10_sqp_min_purchases": 3,
+    "leak_days": 7,
+    "leak_tolerance": 10,
+    "leak_pause_clicks": 15
+  },
+  "visibility": {
+    "enabled": true,
+    "policy_approved_by": "Kim",
+    "policy_approved_on": "2026-10-19",
+    "execution": "preview_only_per_target_approval_required",
+    "review_days": 7,
+    "experiment_window_days": 14,
+    "max_recommendation_age_days": 7,
+    "max_snapshot_age_days": 2,
+    "max_delivery_age_days": 2
+  },
+  "placement": {
+    "invest_tos_pct": 50,
+    "prove_tos_pct": 30,
+    "rank_tos_standing": {
+      "approved": true,
+      "by": "Kim",
+      "on": "2026-10-20",
+      "_note": "Kim, 2026-10-20 about 14:40 SGT: top of search on rank-investment campaigns is standing policy, +50% Invest and +30% Prove first (invest_tos_pct and prove_tos_pct above). New rank campaigns are created at it and live ones are set to it with no separate approval, inside the evidence ladder (the investment bands and Kim's $600 a month a product bounded it too until decisions 99 and 100, 2026-10-22, made money information, not a gate). The rest of search, product pages and Business of a rank campaign stay as live (0% on a new one). Campaigns whose name carries a placement experiment (e.g. 'TOS 900%') and campaigns on up-and-down bidding or with audience adjustments are left as they are. Every other campaign and placement stays under recommendations below. Set approved to false to go back to 0% on new rank campaigns and hold on live ones."
+    },
+    "recommendations": {
+      "enabled": true,
+      "status": "preview_only_pending_Kim_policy_approval",
+      "attribution_lag_days": 15,
+      "min_clicks_30d": 30,
+      "min_orders_30d": 3,
+      "min_clicks_90d": 50,
+      "min_orders_90d": 5,
+      "recent_min_clicks": 10,
+      "deadband": 0.1,
+      "max_step_pp": 25,
+      "max_positive_modifier": 100,
+      "rounding_pp": 5,
+      "review_days": 28,
+      "max_snapshot_age_days": 2,
+      "max_economics_age_days": 7
+    },
+    "shape": {
+      "enabled": true,
+      "approved": {
+        "by": "Kim",
+        "on": "2026-10-26",
+        "decision": 140
+      },
+      "window": "90d",
+      "min_campaign_clicks": 50,
+      "min_campaign_orders": 5,
+      "prior_clicks": 30,
+      "min_share": 0.5,
+      "min_cut": 0.1,
+      "min_base_bid": 0.02,
+      "experiment_files": [],
+      "experiment_name_markers": [
+        "ON80 |",
+        "ON50 |"
+      ],
+      "_experiment_note": "Campaigns in a live experiment are never shaped: the overnight test (docs/experiments/203-overnight-2026-10-22/protocol.md) admitted only down-only campaigns with no placement boosts, and its ON80 copies must stay that way. experiment_files are repo-relative JSON files whose campaign ids (campaign_id, campaignId, source_campaign_id, source) are skipped; a missing file stops the shape for the run. Remove an entry when its experiment ends. Since 2026-11-04 a marker also holds every AI row on such a campaign (bids, budgets, pauses) in held/: the overnight test's own thread sets the copies' bids (round 2 renames the ON80 copies ON50, rule 21248); the originals stay AI-bid (scripts/plan_lanes.py experiment_rows).",
+      "_note": "Kim, 2026-10-26 about 00:30 SGT, decision 140 ('let's try this to build 1 and 2 as you suggest'): the product-page base bid. In a campaign with enough placement data, the placement that converts best keeps the keyword's bid as the plan priced it (a rank campaign's top of search keeps its full policy bid), and each other placement bids in proportion to its own conversion against that best one, never under min_share of it. Amazon only lets a placement go up, so the base bid drops to the lowest placement's share and the modifiers raise the others back; no placement bids more than the plan priced it. Only on an Auto product, in a campaign it has alone, with every row of the campaign in the Auto lane or held by the planner (a held row's keyword is shaped from its live bid, since 2026-10-26) and no budget, top-of-search or other campaign row this run (scripts/placement_shape.py; references/placements.md, 'Product-page base bid'). Conversion: placement_inputs.json's mature window, each placement shrunk toward the campaign's own by prior_clicks; the campaign needs min_campaign_clicks and min_campaign_orders there; a shape that cuts no placement by min_cut is not written. enabled false turns it off."
+    },
+    "down_only": {
+      "enabled": true,
+      "_note": "Kim, 2026-10-26, decision 140: every live Sponsored Products campaign of an AI product on up-and-down bidding (SALES_UP_AND_DOWN) moves to down only (SALES_DOWN_ONLY), its placement and audience adjustments resent exactly as live. Up and down lets Amazon raise a bid up to 100% at the top of search and 50% elsewhere; down only never raises it. Applies on its own (it can only lower bids), except an audience (AMC, low-bid) campaign, which people own (decision 107), and a campaign not shown to advertise this product alone: those wait for a person. Fixed bids (MANUAL) never raise a bid and are left as they are. Since 2026-10-27 (Kim, decision 155) an audience copy moves on its own too (audience_auto): down only can never raise a bid, so it carries no more risk than any other campaign; a campaign not shown to advertise this product alone still waits for a person.",
+      "audience_auto": true
+    },
+    "policy": {
+      "enabled": true,
+      "non_rank_tos_pct": 0,
+      "boost_aware": true,
+      "approved": {
+        "by": "Kim",
+        "on": "2026-10-27",
+        "decision": 155
+      },
+      "_note": "One placement policy for every Sponsored Products campaign of an AI product (Kim, 2026-10-27, decision 155: 'Build 0 to 9, placement table included'). A rank campaign (an exact SKC whose search is Invest, Prove first, retained in the invest log or a season rank search, and a B2B campaign holding a business invest) takes the standing rank policy above (+50% / +30%). Every other campaign, enabled or paused, the older human-launched ones and the 'TOS 900%' experiments included, has top of search set to non_rank_tos_pct (0%) on its own (it can only lower bids), with its other placements sent back as live (the product-page base-bid shape owns those). The ON80 overnight-test copies and their originals (shape.experiment_files, experiment_name_markers) are left alone. boost_aware: while a campaign keeps a top-of-search boost this run (its write can't be made safely: another bidding strategy, audience adjustments, a global campaign, not read live), every non-rank keyword and target in it bids its price / (1 + boost), so bid x boost never exceeds the price the role set (scripts/plan.py, placement policy; references/placements.md, 'Placement policy'). enabled false goes back to leaving every non-rank boost as live."
+    },
+    "audience": {
+      "price_around": true,
+      "approved": {
+        "by": "Kim",
+        "on": "2026-10-27",
+        "decision": 156
+      },
+      "_note": "The audience boost (Kim, 2026-10-27, decision 156, card 'Price the bid around the boost'). An AMC or other audience bid adjustment multiplies a bid for the shoppers in that audience: the 'AMC - Low Bids 0.25' campaigns carry +240% to +300% (B0SAMP0004's +240%, B0SAMP0005's +255%, read 2026-10-27), so a $0.25 bid paid $0.85, and about $1.70 with up-and-down bidding at the top of search ($1.33-$1.75 a click seen). The adjustment stays (the AMC audiences are the point of those campaigns), and every non-rank keyword, target and ad-group default in a campaign with one bids price / ((1 + kept top of search) x (1 + its largest audience boost)), never under $0.02, so an audience shopper's click never costs more than the price either. price_around false goes back to pricing those bids as if the boost weren't there."
+    }
+  },
+  "budgets": {
+    "invest_per_day": 10,
+    "prove_per_day": 5,
+    "biggest_search_per_day": 15,
+    "harvest_per_day": 5,
+    "rerank_click_share_target": 0.1
+  },
+  "budget_headroom": {
+    "_note": "Kim 2026-10-20: a campaign that runs out of budget at a low ACOS gets more budget. scripts/budget_headroom.py; references/budget-headroom.md. ACOS is judged against the product's own breakeven ACOS (unit profit / price).",
+    "window_days": 14,
+    "settle_days": 2,
+    "capped_share": 0.9,
+    "min_capped_days": 5,
+    "min_orders": 3,
+    "max_acos_share": 0.8,
+    "step": 0.5,
+    "min_step": 1.0,
+    "max_budget": 50.0,
+    "review_after_days": 7,
+    "step_back_min_clicks": 20
+  },
+  "auto": {
+    "enabled": true,
+    "prove_orders": 2,
+    "prove_index": 1.1,
+    "invest_orders": 3,
+    "invest_index": 1.1,
+    "raise_orders": 3,
+    "raise_index": 1.4,
+    "max_raise_pct": null,
+    "min_opportunity": 300,
+    "monitor_spend_cap": 15,
+    "max_raises": null,
+    "max_loss_month": 60,
+    "invest_guide_month": 2000,
+    "lock_weeks": 4,
+    "big_cut_pct": null,
+    "big_cut_orders": 3,
+    "repromote_cooloff_days": 56
+  },
+  "_auto_note": "auto.enabled is true for every AI product since 2026-10-22 (autonomous runs, Kim: 'turn it on for all AI products', decision 98; docs/superpowers/specs/2026-10-22-autonomous-runs-design.md): the run applies its Auto rows itself; a product file's \"auto\": {\"enabled\": false} is that product's kill switch (scripts/autonomy.py switch-off writes it when a guard trips), and false here is everyone's. invest_guide_month: a guide, not a gate (Kim, 2026-10-22, decision 99: 'its ok to invest $1800 to $2000 per ASIN per month, spread over $60 to $70 per day. don't cap the promotion' and 'we don't want to put a cap and hamper the autonomous engine. if spend is overboard, the humans will notice it and step in anyway'): the run summary carries the product's planned invest a month and above_invest_guide, and the Slack recap says so when it is above; no promotion is parked, held or shrunk for money (re-confirmed 2026-10-31, Kim, decision 174: \"invest in validated keywords without a money cap\"; invest_guide_month and max_loss_month are flags in the run summary and the Slack recap only). max_loss_month (the $60 loss line for one search, which shrinks a search's band) and the product's investment band are information too since decision 100: a promotion past either goes out, flagged on its row (over_loss_line, over_invest_band), listed on the run summary (over_loss_line, over_invest_band, loss_line_month, invest_band_month) and named in the Slack recap; until then it went to a person. It replaced kim_product_month ($600, a gate: a promotion past it was Kim's) and kim_program_month ($3,000 for the program, a gate for a few hours on 2026-10-22). repromote_cooloff_days: a search the stop-loss stepped down is not re-invested in by the Auto lane for this many days after its step-down (its invest_history entry's ended date); a re-investing row inside the window is held, not sent to a person (Kim, 2026-10-22). auto.prove_index was 1.4 until 2026-10-22. Kim, 2026-10-21: the bar for 2 orders is 1.25 everywhere it appears (auto.prove_index, fallback.prove_index and discovery.cap_lift_index); the 3-order bars stay (invest_index 1.1, raise_index 1.4). docs/superpowers/specs/2026-10-21-keyword-selection-by-data-stage-design.md section 4.9. Changed 2026-10-25 (Kim, decision 135: \"#11 - ok then\" on fix 11 of the AI spend review): auto.prove_orders and fallback.prove_orders 2 -> 3, so a search needs three orders before it gets its own Prove-first campaign, its SB video and +30% top of search; the 2-order bar at 1.25 stays only for discovery.cap_lift_orders (a bid on an existing keyword, not a new campaign). Reversed 2026-10-31 (Kim, decision 174: \"validated = 2+ orders, so drop the Prove-first order bar from 3 to 2\"): auto.prove_orders and fallback.prove_orders 3 -> 2, so a search with 2+ orders at prove_index (1.25, 1.1 since decision 178) or better gets its own single-keyword Prove-first rank campaign, +30% top of search and its SB video. Its orders are the higher of its SQP purchases and its search-term report ad orders (lanes._ladder_orders; SQP already holds the ad-attributed purchases, so the two are never added). The 3-order bars for Invest (invest_index 1.1) and above-breakeven raises (raise_index 1.4) stay. Changed 2026-10-31 (Kim, decision 178: 'anything above 1.1, we will kind of rank'): the 2-order bar 1.25 -> 1.1 everywhere it appears (auto.prove_index, fallback.prove_index, discovery.cap_lift_index), so 1.1 means a rank search on 2 or 3 orders alike: index is already shrunk toward the market by the 10-click prior, so at a 10% market 1.1 asks 2 orders within about 17 clicks against about 14 at 1.25. Kept beside the auto block, not inside it: test_lanes pins the auto block's keys. max_raises null since 2026-10-29 (Kim, decision 164: 'lift the 20-raise caps. let suggested validated raises through'): no count of raises per run; every raise keeps max_raise_pct (+25% a run), the raise ladder (raise_orders, raise_index) for anything above breakeven, locks, the cool-off and the efficiency guard (the leak check since decision 175). A number restores a count cap. max_raise_pct null since 2026-10-29 (Kim, decision 165: 'i want bids to reach their correct price way quicker ... as long as we lock down the bids calculations accurately, we should go ahead and just do the adjustments, don't put the limit'): a raise goes to its calculated price in one run; until then +25% a run. Raises above breakeven still need the ladder's evidence (raise_orders, raise_index) or Amazon's suggested range on an invest search; close calls stay Monitor. A number restores the step. big_cut_pct null since 2026-10-29 (Kim, decision 168, \"the full package\"): a big cut on a keyword with big_cut_orders orders goes straight to its price too; it was 50 (a cut over 50% stepped down 50% this run and the rest the next).",
+  "launch": {
+    "_note": "Launch design section 5 (docs/superpowers/specs/2026-10-20-launch-process-ai-growth-design.md) plus section 4.3 of docs/superpowers/specs/2026-10-21-keyword-selection-by-data-stage-design.md. rank_count: the searches at the median bid; sqp_min_queries: a product with a launch block dated within 90 days and fewer SQP queries with impressions than this is in the launch stage; placeholder_bid and stop_loss_weeks: the launch design; min_relevancy: the lowest DataDive relevancy a niche keyword may have to join the launch list; amazon_top_rank: Amazon's keyword recommendations ranked within this join the shared set. Added 2026-10-22.",
+    "rank_count": 5,
+    "sqp_min_queries": 10,
+    "placeholder_bid": 0.5,
+    "stop_loss_weeks": [
+      4,
+      6
+    ],
+    "min_relevancy": 0.5,
+    "amazon_top_rank": 20,
+    "_test_note": "Kim, 2026-10-31, decision 178 (replaces decision 177's fixed 15, 20 and 30 clicks; scripts/mid_bid.py test_ends): the launch test of a Test or Discovery keyword with 0 to 1 orders of its own runs at the suggested mid until test_orders (2) expected orders at the product's ad conversion, at least min_clicks (15) and at most max_clicks (60) clicks: 20 clicks at 10%, 40 at 5%. 0 orders then ends it (back to its role's price, breakeven or Trim; the leak check may pause it). 1 order gets more clicks at the mid until extend_orders (3) expected orders (30 at 10%, 60 at 5%; at most 1.5 x max_clicks), then is judged again on its role. A keyword in its test is not paused by the leak check until its test ends. 2+ orders validates it: index auto.prove_index (1.1) or more goes to Prove first, 0.8 to 1.1 stays at the mid, under 0.8 goes to Trim. Kim: 'a good system whereby good keywords don't fall through, and we can also spend appropriately to let launch keywords prove themselves'. At a fixed 15 clicks a 5%-converting product's good keywords failed about half the time; at 2 expected orders a market-rate keyword fails about 1 time in 7 on any product.",
+    "test_orders": 2,
+    "extend_orders": 3,
+    "min_clicks": 15,
+    "max_clicks": 60
+  },
+  "mid_bid": {
+    "_note": "Kim, 2026-10-31 (decision 177: 'stop cutting validated or still-launching keywords to breakeven just because they convert at about the market rate. Bid them at the suggested middle bid so they keep real visibility'; scripts/mid_bid.py, rulebook section 2 'The suggested mid'). Ordinary (non-rank) Sponsored Products and Sponsored Brands keywords bid the suggested mid, above or below breakeven, never the low or the high, with no top-of-search boost and no rank campaign of their own: a Hold keyword whose search has validated_orders (2)+ orders (max of SQP purchases and ad orders, lanes._ladder_orders) at index 0.8 to under 1.1; a Test or Discovery keyword with 2+ orders at index 0.8 or more (a Test search at auto.prove_index, 1.1 since decision 178, goes to Prove first on the ladder); and the launch test (launch.test_orders, extend_orders, min_clicks, max_clicks: sized to the product's ad conversion since decision 178). 75% of the mid on a search the product ranks top 10 for (organic_share.top10_factor); only the owning copy (most clicks) of a duplicated keyword. The mid: Amazon's suggested median (the keyword's own recommendation, else suggested_bids.json for exact, suggested_bids_match.json for broad and phrase), else SoldScope's middle cost per click once Amazon was tried, else an estimate (the bid_fallback estimate, then its relaxed form), else the role's own price. An SB keyword bids its search's mid x sb_video.sb_rank_ratio. Not in season (a seasonal product in season keeps breakeven), not business (B2B), audience, brand, Defend, Trim, Rank or paused keywords. false restores the role prices.",
+    "enabled": true,
+    "validated_orders": 2,
+    "match_types": [
+      "exact"
+    ],
+    "sponsored_brands": false,
+    "_match_types_note": "Kim, 2026-11-04 SGT, decision 183: the visibility test of that morning (10 cheap top-spending products, then SB and B0SAMP0006) made the rule for every product, so all of them can stay on Auto. On $5.99-9.99 products with $2-3 profit a unit the suggested mid ($0.80-2.10) is far above what a click is worth ($0.12-0.40): broad and phrase at the mid lost money (Nov 1-2: $452, CVR 7.7%, -$321) while exact at the mid converted much better (CVR 12.9%). So the mid prices Sponsored Products exact keywords only; broad and phrase keywords, product targets and Sponsored Brands keywords keep their role's price (breakeven, Trim 70%, top 10 75%). Kim: 'we won't have visibility' if everything went to breakeven, so exact keeps the mid. [\"exact\", \"broad\", \"phrase\"] and sponsored_brands true restore decision 177."
+  },
+  "stage": {
+    "_note": "Sections 4.1, 4.4.1 and 4.6 of docs/superpowers/specs/2026-10-21-keyword-selection-by-data-stage-design.md (scripts/stage.py). early_max_observed_days: a product whose longest SQP observed-day count is under this is early; early_min_trusted_queries: a product with fewer queries carrying trusted_min_clicks of our clicks than this is early (a full SQP window is mature whatever the count); full_window_days: the longest observed-day count that makes a product mature by window, 77 = 11 complete SQP weeks, the most a 90-day pull holds (the design said 84; set 2026-10-22, confirmed by Kim 2026-10-22, decision 93); auto_min_observed_days: a promotion is Auto only when its query has been seen this many days (two SQP weeks), in stage early since 2026-10-22 and at every stage since 2026-10-25 (Kim, decision 135, fix 11 of the AI spend review: a query SQP shows in fewer days waits for its second week; a search with no SQP row is not counted here); volatile_week_ratio: an SQP week that adds more of our clicks than this times all earlier weeks holds promotions in stage early only. Added 2026-10-22.",
+    "early_max_observed_days": 28,
+    "early_min_trusted_queries": 5,
+    "full_window_days": 77,
+    "auto_min_observed_days": 14,
+    "volatile_week_ratio": 1.0
+  },
+  "growth": {
+    "_note": "docs/superpowers/specs/2026-10-22-for-growth-tab-design.md; the last seven keys are the launch design's (docs/superpowers/specs/2026-10-20-launch-process-ai-growth-design.md 4c). The For Growth hand-over block (scripts/growth.py): a product fires only with growth.enabled true in its file (enabled_default false); first pass at the anchor + first_pass_days; after a resolved pass, the next one no earlier than the last listing change + pass_floor_weeks and no later than + pass_ceiling_weeks, earlier only when pass_min_new_funded funded searches sit uncarried, or a carried term sits under the pass bar, for pass_persist_runs runs, or the stage changed; the rotate-out flag (rotate_out_min_clicks SQP clicks and 0 purchases or an index under rotate_out_index) any time outside quiet_days after a listing change. Pass bar inside a block: judge_clicks SQP clicks and an index under below_market_index, shielded by sqp_shield_purchases SQP purchases or an index of sqp_shield_index or more. Added 2026-10-22. Changed 2026-10-25 (Kim; decision 124): first_pass_mode 'evidence' replaces the day-56 first pass. The first block is raised when the data floor holds (stage not launch and first_pass_min_trusted_queries trusted queries) and skc_min_proven proven SKC keywords (Rank rows at Invest on SQP's own same-query index; not Prove first, the fallback, season or launch-list searches) sit uncarried by the copy for pass_persist_runs runs; with first_pass_ceiling, by the later of the anchor and growth.enabled_on + pass_ceiling_weeks at the latest ('date' restores anchor + first_pass_days). The evidence gate of later passes counts proven SKC keywords too (skc_min_proven replaces pass_min_new_funded). The flag bar skips a term the block's shield keeps (open item 49). A triggered run also posts one line to #3-marketing-traffic (notify.growth_channel_id). Added 2026-10-25 (Kim, the For Growth audit): highlight_slots caps the In rows pointed at the one highlight field (the rest go to a bullet) and offer_max_rows caps the offer-problems table, biggest opportunities first. Changed 2026-10-26 (Kim, decision 138): the In rows are placed in sales-potential order (SQP searches x market CVR x index), title first (title_slots), then the highlight (highlight_slots), then bullets; any funded role may take the title, not only Invest; a search holding one of seasonal_words that is not part of the product itself goes to a bullet, never the title or the highlight (evergreen first). Kim, 2026-10-29 (decision 167: 'be sure to have the for growth tab populated from time to time as new SKCs surface'; 'go on growth'): a new trigger new_skc raises an item when a search with its own SKC in the invest log is missing from the live copy and no earlier block offered it (or refreshes the open item), at most one new item every new_skc_min_days (14; null turns it off) and outside quiet_days after a listing change (30 -> 14). Decision 166 (the same day) switched For Growth on for every AI product.",
+    "enabled_default": false,
+    "first_pass_mode": "evidence",
+    "skc_min_proven": 2,
+    "first_pass_min_trusted_queries": 5,
+    "first_pass_ceiling": true,
+    "first_pass_days": 56,
+    "pass_floor_weeks": 8,
+    "pass_ceiling_weeks": 26,
+    "pass_persist_runs": 2,
+    "quiet_days": 14,
+    "new_skc_min_days": 14,
+    "rotate_out_min_clicks": 30,
+    "rotate_out_index": 0.5,
+    "judge_clicks": 17,
+    "below_market_index": 0.8,
+    "sqp_shield_purchases": 3,
+    "sqp_shield_index": 0.8,
+    "offer_min_volume": 150,
+    "title_slots": 3,
+    "highlight_slots": 2,
+    "seasonal_words": [
+      "back to school",
+      "christmas",
+      "xmas",
+      "holiday",
+      "holidays",
+      "halloween",
+      "thanksgiving",
+      "valentine",
+      "valentines",
+      "easter",
+      "mothers day",
+      "fathers day",
+      "graduation",
+      "new year",
+      "new years",
+      "st patricks",
+      "hanukkah",
+      "fourth of july",
+      "4th of july",
+      "black friday",
+      "stocking stuffer",
+      "stocking stuffers",
+      "advent",
+      "summer",
+      "winter"
+    ],
+    "offer_max_rows": 12,
+    "stale_days": 45
+  },
+  "fallback": {
+    "_note": "Section 4.4.2 of docs/superpowers/specs/2026-10-21-keyword-selection-by-data-stage-design.md: a search with no SQP row may reach Prove first (never Invest, Hold, Trim or a raise) on the search-term report against the product's market conversion, at this many orders, this index and this many ad clicks. Added 2026-10-22. prove_orders 2 -> 3 on 2026-10-25 (Kim, decision 135); back to 2 on 2026-10-31 (Kim, decision 174: validated = 2+ orders, counted as the higher of SQP purchases and search-term ad orders).",
+    "prove_orders": 2,
+    "prove_index": 1.1,
+    "min_clicks": 5
+  },
+  "routine": {
+    "run_every_days": 7,
+    "_note": "Kim, 2026-10-23 (decision 107): the morning routine (SKILL.md, scripts/routine.py) runs each AI product whose weekly run is due: the later of its registry next_run and its last run + run_every_days. A product that already ran today is never run again that day (until decisions 164 and 165 this kept the per-run caps, +25% a bid and 20 raises, per week)."
+  },
+  "write_window": {
+    "rule": "21246",
+    "on_hours": {
+      "weekday": [
+        6,
+        21
+      ],
+      "weekend": [
+        5,
+        21
+      ]
+    },
+    "modifier": {
+      "weekday": 1.0,
+      "weekend": 0.8
+    },
+    "hold_hours": 2,
+    "settle_minutes": 60,
+    "recheck_hours": 4,
+    "hold_at": [
+      "on"
+    ],
+    "recheck_at": [
+      "on",
+      "off"
+    ],
+    "_note": "Kim, 2026-10-26 (decision 151): the skill keeps bid writes clear of rule 203's switches itself (scripts/write_window.py). Hours are Los Angeles time, first and last ON hour (weekday Mon-Fri 06:00-21:59, weekend Sat-Sun 05:00-21:59 at -20%, modifier.weekend 0.8, since Kim changed rule 203 on 2026-10-31, decision 174; until then -40%, 0.6); keep them and the modifier equal to rule 203. At an ON switch Scale Insights sets every bid from its saved copy, which takes a written bid only about 2 hours after the write: no write in the hold_hours before a switch in hold_at, and a re-check after any switch in recheck_at that came within recheck_hours of a write. Whether the OFF switch also resets bids is tested 2026-10-27: if it does, add \"off\" to hold_at; if not, drop it from recheck_at. settle_minutes (decision 152): the hour after an ON switch is held too, because Scale Insights re-sends SP bids before SB and a read then can catch both sides."
+  },
+  "hold_uplift": {
+    "enabled": false,
+    "ended": "2026-10-25",
+    "index_from": 1.0,
+    "index_to": 1.1,
+    "pct": 15,
+    "since": "2026-10-23",
+    "review_on": "2026-11-20",
+    "experiment": "docs/experiments/hold-uplift-2026-10-23",
+    "_note": "Kim, 2026-10-23 (decision 108): \"Let's lock this +15% bids for idx 1 to 1.1\". A Hold search whose index is index_from or more and under index_to (Hold ends at 1.1) bids its keywords' breakeven +pct, for more impressions; 0.8-1.0 stays at breakeven and is the comparison group. Consumer Sponsored Products keywords only. A raise to it is the role's own price, so it applies on its own (lanes._raise_lane). The baseline is recorded by scripts/hold_uplift.py the first time a product's run applies it; the review on review_on keeps it or sets enabled false (the experiment's protocol.md). Ended early on 2026-10-25 (Kim, decision 135: \"#10 - alright then\" on fix 10 of the AI spend review, bid at or below breakeven): every Hold keyword bids its breakeven again; the experiment folder keeps the baselines."
+  },
+  "bid_fallback": {
+    "own_cpc_min_clicks": 10,
+    "peer_min_searches": 3,
+    "_note": "Kim, 2026-10-23 (decision 106): an invest search Amazon gives no suggested bid for never stops the run once Amazon was tried (bid_sources_tried.json in the run folder). It is priced on SoldScope's estimate for the exact query (soldscope_bids.json), else on an estimate: the higher of its own 90-day ad cost per click (own_cpc_min_clicks clicks or more) and the median of Amazon's suggested medians on the product's other searches this run (peer_min_searches or more), else thresholds.no_suggestion_multiplier x breakeven. scripts/bid_fallback.py; rulebook section 1."
+  },
+  "guards": {
+    "_note": "Kim, 2026-10-29 SGT (decision 163: 'the auto tripping confuses my team members.. how do we not make the auto trips?'): the Day-1 spend check and the read-back no longer switch a product's Auto off. A Day-1 spend over 1.5x the 14-day weekday average opens a 'Day-1 spend' alert for the book owner (most trips were the spend a run meant to add: new rank campaigns, raises, opened hours); the stop-loss and the weekly leak check (decision 175; the efficiency guard, decision 143, until 2026-10-31) brake a real loss. A read-back file that doesn't cover the folder is an input error (scripts/autonomy.py stops, writes nothing); a real mismatch stops the folder's remaining writes and opens a 'Read-back' alert. true restores the old switch-off for that guard. autonomy.py switch-off still switches a product off by hand.",
+    "day1_switch_off": false,
+    "readback_switch_off": false
+  },
+  "pricing": {
+    "_note": "Kim, 2026-10-29 SGT (decision 162: 'build the bids on the calculation of each search's own conversion using sqp'): search_conversion 'sqp' prices every consumer keyword on its search's own SQP conversion (all our clicks on the listing for that search, ads and organic), shrunk toward the search's market by thresholds.prior_clicks; a search SQP has no clicks of ours for falls back to the ad report. An exact keyword bids its search's price (its own ad record no longer pulls it toward its ad conversion); a broad, phrase or auto keyword bids the click-weighted price of the searches it served (search-term report, 90 days) and loses the product-average cap, once it has served 10 or more clicks (thresholds.trusted_min_clicks; under that, the rule before); Sponsored Brands the same, x the SB/SP conversion ratio. Profit per unit is the settled-referral figure (referral_override, decision 136). Roles, the non-rank factor, Trim, the evidence ladder, +25% per raise, the efficiency guard and stop-loss are unchanged (since then the +25% step went with decision 165 and the efficiency guard became the leak check with decision 175). Product targets, SD and B2B keep their own records. 'ad' restores the rule before.",
+    "search_conversion": "sqp"
+  },
+  "referral": {
+    "_note": "Kim, 2026-10-29 SGT (decision 169: 'yes, auto-read the referral fee'): every run reads the settlement report (MAP sp_settlement, Order rows for the SKU on marketplace, posted in the last window_days; references/data-pull.md 'Referral fee') and prices on commission / principal once min_units units have settled: profit_per_unit moves by (old rate - new rate) x price and referral_override records the rate, window and units. Fewer units keep the stored rate (referral_override, else Scale Insights'). A missing read stops the run (need_settlement.json). Amazon's list rate for these products is 15%; the settled rate has run 10% and 5%. auto false restores the stored rate with the monthly recheck.",
+    "auto": true,
+    "window_days": 14,
+    "min_units": 10,
+    "marketplace": "Amazon.com"
+  },
+  "discovery": {
+    "_note": "Section 4.4.5 of docs/superpowers/specs/2026-10-21-keyword-selection-by-data-stage-design.md (Kim, 2026-10-21): a Discovery keyword with this many orders at this keyword index against the product's ad conversion bids its own breakeven, uncapped. Added 2026-10-22.",
+    "cap_lift_orders": 2,
+    "cap_lift_index": 1.1
+  },
+  "harvest": {
+    "gate_bands": [
+      0.03,
+      0.05,
+      0.07,
+      0.09,
+      0.12
+    ],
+    "campaign_suffix": "Harvest Exact - SI import",
+    "ad_group_name": "Harvest Exact"
+  },
+  "dashboard": {
+    "url": "https://your-dashboard.example.com",
+    "railway_project": "your-ppc-repo-dashboard",
+    "railway_project_id": "00000000-0000-4000-8000-900000000006",
+    "railway_service_id": "00000000-0000-4000-8000-900000000007",
+    "railway_environment_id": "00000000-0000-4000-8000-900000000008",
+    "_note": "Team dashboard, one page per ASIN (references/dashboard.md). The team password and the publish token live only in each publisher's ~/.config/your-ppc-repo-dashboard/secrets.env; Railway holds their SHA-256 hashes."
+  },
+  "audience_campaign_markers": [
+    "AMC",
+    "Low Bids",
+    "Low 0."
+  ],
+  "b2b_campaign_markers": [
+    "B2B"
+  ],
+  "business": {
+    "_note": "Amazon Business (B2B) keywords take every role and the same lanes as consumer keywords, judged on their own evidence (rulebook section 9; decided by Kim 2026-10-21 evening, built 2026-10-21). pool_prior_cvr: the account's B2B conversion, the number the B2B pool is shrunk toward with the 10-click prior (0.346 as of 2026-10-21: 3,353 orders on 9,685 clicks over 90 days). pool_prior_as_of: the date it was pulled. pool_prior_source: the one source of record for it, the recipe in references/data-pull.md ('Monthly: the B2B pool's prior'); refreshed by hand once a month in the record step, Kim signs off the change. Without pool_prior_cvr the planner falls back to the product's consumer ad conversion and summary.business.pool_prior says so. exact_campaign_marker: the name of the team's B2B exact campaign a business invest search with no B2B exact keyword gets its New exact keyword in (never Launch Targets: the team's Launch Targets rule negates a search once it has an order). new_keyword_spend_share: the share of the Invest budget a new B2B exact keyword is modelled to spend (invest_per_day x 30 x this), for its band and the product's planned invest. Each product file's own business.si_rules_off (not here) is the date its B2B ad groups came off Scale Insights bid rules: until it is set, every run carries a Scale Insights rules row for them. Its business.si_exact_owners (not here either) lists the ids of the B2B campaigns already on the exact-owners strategy (103) with their searches whitelisted: after si_rules_off is set, the row comes back for a campaign that newly holds a business invest and is not listed (rulebook 9.7; spec 9b, ruling 17).",
+    "pool_prior_cvr": 0.346,
+    "pool_prior_as_of": "2026-10-21",
+    "pool_prior_source": "MAP run_report_sql over sponsored_products_campaigns: SUM(purchases7d) / SUM(clicks), over the 90 days to the day before pool_prior_as_of, for every Sponsored Products campaign of the account whose siteRestrictions include AMAZON_BUSINESS (MAP list_resources sp_campaigns); references/data-pull.md, 'Monthly: the B2B pool's prior'",
+    "exact_campaign_marker": "B2B - Search Terms with Sales - Exact",
+    "new_keyword_spend_share": 0.25
+  },
+  "_b2b_note": "B2B-exclusive campaigns (siteRestrictions AMAZON_BUSINESS, or these name markers) are their own shopper kind: rulebook section 9 and docs/superpowers/specs/2026-10-21-amc-b2b-fold-design.md. Repair of the Oct 17-20 damage: runs/2026-10-21-b2b-repair/.",
+  "targets": {
+    "_note": "Sponsored Products ASIN and category targets (rulebook section 2b). Added 2026-10-19 at Kim's request. Since 2026-10-25 (Kim, decision 135: \"we should also cap the auto, SD and idle keywords campaigns\"): Sponsored Products auto targets (close match, loose match, substitutes, complements) and Sponsored Display CPC targets are priced the same way. sd: Sponsored Display targets are judged against the product's own Sponsored Display conversion (its SD targets' pooled orders and clicks, shrunk toward the product's ad conversion by the 10-click prior), since a display click converts differently from a search click; a target in a vCPM campaign (sd_skip_cost_types) is never priced (its bid is per thousand impressions). A target with no clicks of its own was never raised (decision 135) until decision 168 set inventory.no_data_raise true: since 2026-10-29 it is priced like any other.",
+    "enabled": true,
+    "auto_targets": true,
+    "sd": true,
+    "sd_skip_cost_types": [
+      "vcpm"
+    ],
+    "proven_orders": 3,
+    "pause_min_clicks": 22,
+    "skip_campaign_markers": [],
+    "_skip_campaign_markers_note": "Until 2026-10-27 this was [\"TOS\"]: every target in a campaign whose name held \"TOS\" (the 'Single Product Targeting - TOS 900%' experiments, which nobody bid) was left unpriced. Since decision 155 those targets are priced, at price / (1 + boost) while the boost is live (placement.policy.boost_aware), and the boost itself goes to 0% (placement.policy).",
+    "paused": true,
+    "_paused_note": "Kim, 2026-10-27, decision 155: a paused target (or a target of a paused campaign or ad group) is priced too, cut only, never raised, so turning it back on can't bring back an old launch bid. The same holds for keywords (inventory.paused) and Sponsored Brands keywords and targets (sb_video.paused)."
+  },
+  "inventory": {
+    "_note": "Price every keyword and target, leaving none behind (Kim, 2026-10-25, decision 135: \"we'll price every single keywords now, leaving none behind with the best data available\"). Each run reads the product's live Sponsored Products keywords and targets from MarketplaceAdPros (live_keywords_p*.json, live_targets_p*.json; references/data-pull.md) so a keyword or target with no 90-day row is priced too, not only the ones Scale Insights reports. required: plan.py stops and writes need_live_inventory.json when they are missing, unless the run is planned with --partial-inventory \"<why>\" (the summary records why). A keyword or target with no clicks of its own is priced from the best data it has (its search's conversion, else the product's) and is never raised above its live bid on that run (no_data_raise false). Since 2026-10-29 (Kim, decision 168, \"the full package\") no_data_raise is true: with each search priced on its own SQP conversion (decision 162), a keyword or target with no clicks of its own goes to that price like any other. copy_holding_bid_cvr: when a new exact campaign or SB video takes over a search this run, its older copies drop to this conversion x profit per unit (never above their live bid, never under the ad type's minimum) the same day, and are paused once the new owner serves (fix 7 of the AI spend review).",
+    "required": true,
+    "no_data_raise": true,
+    "copy_holding_bid_cvr": 0.1,
+    "paused": true,
+    "_paused_note": "Kim, 2026-10-27, decision 155: a paused keyword, or a keyword of a paused campaign or ad group, is priced cut only (never raised), so re-enabling it can't balloon; it stays paused (the bid is the only write). The rank logic still treats it as an inactive copy (decision 154).",
+    "ad_group_default_bids": true,
+    "_ad_group_default_bids_note": "Kim, 2026-10-27, decision 155: a keyword or target with no bid of its own bids its ad group's default bid, and Scale Insights' import rules (121, 131, 143 and the harvest) add new ones 'at the ad group bid' between runs. So every ad group of the product with such a keyword or target (live_ad_groups_p*.json, MAP list_resources sp_ad_groups by campaign id) has its default bid priced: the Discovery price (the product's ad conversion x profit per unit x the non-rank share; an audience copy the same), cut only. The harvest ad group keeps its own default (harvest settings).",
+    "shared_campaigns": false,
+    "_shared_campaigns_note": "Kim, 2026-10-27, decision 155: a campaign that advertises several AI products and carries no single ASIN in its name ('Cross-Selling - Own Product Targeting') is read by the run of the product whose file lists it in shared_campaigns (one owner) and priced cut only, at the lowest profit per unit among the AI products it advertises (shared_campaigns_profit in the product file names them). A shared campaign that also advertises a product on Scale Insights rules stays Scale Insights' (decisions 109 and 111). Switched off by decision 156 (Kim, 2026-10-27: 'we can leave out campaigns with multiple ASINs in the campaigns, because these are done on purpose for product collection ads and cross selling campaigns'): a multi-ASIN campaign is left out of the AI's pricing and listed in the coverage ledger (multi_asin); the code stays for a later change of mind.",
+    "ad_campaigns": true,
+    "_ad_campaigns_note": "Kim, 2026-10-27, decision 156 ('check to see if the new skill covers every single campaign and every single keyword, product targeting on SP, SB, SD for the ASIN, don't leave any out'). The run finds the product's campaigns through its own product ads, not only its name: two MAP run_report_sql reads over sponsored_products_product_ads and sponsored_display_product_ads (90 days, ad_campaigns_p*.json; references/data-pull.md 'Campaigns by product ad') list every SP and SD campaign that advertised the ASIN, with every ASIN it advertised. One that advertises this ASIN alone but is named without it (the 'Auto - $0.65 down only' campaigns, $257 in Sep 26 to Oct 25 on 3 products) joins the product's campaigns and is priced like any other (its live record: own_campaigns.json, sp_campaigns by id). One that advertises several ASINs (product collection and cross-selling campaigns) is left out on purpose and listed. Single-ASIN SD campaigns have their live targets read (live_sd_targets_p*.json) so an idle SD target is priced too. Required with inventory.required."
+  },
+  "coverage": {
+    "enabled": true,
+    "stop_on_unowned": true,
+    "stop_on_missing_reads": true,
+    "required_reads": [
+      "sb_campaigns",
+      "sb_keywords",
+      "sb_targets",
+      "sb_themes",
+      "live_ad_groups"
+    ],
+    "_required_reads_note": "Decision 191 (Kim, 2026-11-05: 'Sometimes the AI bidding doesn't implement the sponsored brands' keyword bid changes. Can you make sure that we are optimizing both sponsored products and sponsored brands at the same time?'): a read listed here that the coverage ledger finds missing stops the plan with exit 2 and nothing planned, and --accept-unowned does not lift it. B0SAMP0007's run of 2026-11-05 planned past its missing SB keyword read with --accept-unowned ('SB keywords not saved this session (inline MAP results / time)'): 847 SP bid rows went out and no SB row, and ad-group default bids stayed as they were. sb_targets and sb_themes count only when sb_video.targets / themes is on, live_ad_groups only when inventory.ad_group_default_bids is on (scripts/coverage.py).",
+    "_stop_on_missing_reads_note": "Decision 156 (Kim, 2026-10-27, 'don't leave any out'): a live read the ledger needs and the run doesn't have (live keywords, live targets, ad groups, SB campaigns, keywords, targets or themes, the product-ad campaigns, the SD targets) stops the run too, instead of only warning, since the entities it holds would be left out of the count unseen. --accept-unowned '<why>' lifts it as it does an unowned entity.",
+    "_note": "The coverage ledger (Kim, 2026-10-27, decision 155: 'every single campaign and every single keyword falls under the purview of the skill'). Each run gives every live campaign, keyword, target and ad group of the product (SP and SB) one status: changed, priced, rank, policy, boost_kept, at_policy, experiment, ad_group_default, paused_kept, si_owned, harvest or unowned (scripts/coverage.py). coverage.json in the run folder lists them; summary.coverage counts them and names the live reads the run didn't have (reads_missing, a warning). With stop_on_unowned, plan.py stops (Nothing planned) when any entity is unowned, unless the run is planned with --accept-unowned '<why>' (summary.coverage.accepted records why)."
+  },
+  "registry": "Monday Focus board (90000000009): one column 'Bid owner' = AI (this skill) or SI. Nobody attaches SI bid rules, or runs SI 'Automate assignment', on an AI-owned ASIN.",
+  "product_types": [
+    {
+      "id": "bookmarks",
+      "label": "Bookmarks"
+    },
+    {
+      "id": "stationery",
+      "label": "Stationery",
+      "note": "Gel pens and highlighters"
+    },
+    {
+      "id": "stickers",
+      "label": "Stickers"
+    },
+    {
+      "id": "cards",
+      "label": "Cards",
+      "note": "Prayer cards"
+    },
+    {
+      "id": "notebooks",
+      "label": "Notebooks",
+      "note": "Notebooks and journals"
+    },
+    {
+      "id": "crafts",
+      "label": "Crafts",
+      "note": "Blank puzzles and craft activities"
+    },
+    {
+      "id": "planners",
+      "label": "Planners",
+      "note": "Bill organizers and budget planners (added 2026-10-20 with B0SAMP0008)"
+    },
+    {
+      "id": "seasonal",
+      "label": "Seasonal",
+      "note": "Halloween and Thanksgiving products on a seasonal harvest plan, outside the AI program (added 2026-10-20, Kim: 'for now')"
+    }
+  ],
+  "_product_types_note": "Home-page groups, in this order (Kim, 2026-10-17: bookmarks together, stationery together). Each product file names its group in \"type\"; the groups follow the product lines in 4. YourBrand docs/reference/product-catalog.md. A product with an unknown type shows under \"Other\".",
+  "goal": {
+    "organic_share": 0.5,
+    "stretch_organic_share": 0.6,
+    "horizon_months": 12,
+    "_note": "Kim, 2026-10-16/17 (decisions 1 and 4): orders about 50% organic and 50% from ads, at about breakeven, within 12 months of launch. Measured on the last 30 days from Scale Insights: organic share = sales without an ad click (all ad types); ad orders are estimated as orders × ad share. Since 2026-10-22 (Kim, decision 99: 'my goal is to get about 50% organic to 50% ppc units ordered.. or at least about 60% organic to 40% ppc') \"on goal\" = an organic share of organic_share (50%) or more of units ordered and profitable after ads; stretch_organic_share (60% organic, 40% PPC) is the better target. The dashboard page (dashboard/site/app.js) draws \"On goal\" by this rule since 2026-10-22 (Kim: \"On goal is 50%+ organic\"); the 4-week sweep cadence follows it too (docs/sweep-playbook.md). Until 2026-10-22 \"on goal\" was within 10 points (band 0.1, now removed) of the target."
+  },
+  "sb_video": {
+    "_note": "Sponsored Brands video for AI-managed products (added 2026-10-18, replacing the SKC audit's SB video build): each invest search gets one exact keyword in the product's 'Highest Converting Search Terms' video series, at its invest bid, with Amazon's bid optimisation off; older SB copies of an invest search are paused. Per-product values (video_asset_id, the AI's own campaign ids, an optional budget) live in the product file's sb_video block.",
+    "enabled": true,
+    "paused": true,
+    "targets": true,
+    "themes": true,
+    "multi_asin_markers": [
+      "Product Collection",
+      "Store Spotlight"
+    ],
+    "_themes_note": "Decision 156 (Kim, 2026-10-27). themes: the product's Sponsored Brands theme targets ('keywords related to your brand', '... to your landing pages'; sb_themes_p*.json, MAP list_resources sb_themes by campaign id) are priced like its SB product targets, at the non-rank share of breakeven on their own clicks and orders, cut only. Two of them spent $68 in Sep 26 to Oct 25 ($58 of it in the last week) and nothing priced them. multi_asin_markers: an SB campaign whose name carries one of these (a product collection or store spotlight ad, several ASINs on purpose) is left out of the AI's pricing and listed in the coverage ledger, like a multi-ASIN SP campaign (Kim, 2026-10-27).",
+    "bid_optimisation_off": true,
+    "_coverage_note": "Kim, 2026-10-27, decision 155. targets: the product's Sponsored Brands product and category targets (sb_targets_p*.json, MAP list_resources sb_targets by campaign id) are priced like its SB keywords, on its own Sponsored Brands conversion, cut only in older campaigns. bid_optimisation_off: every enabled or paused SB campaign of the product that is not the AI's own (consumer, audience or B2B) with Amazon's bid optimisation on gets it switched off ('SB bid optimisation' row, on its own), its positive placement modifiers set to 0% in the same write, since with optimisation off Amazon applies them. Audience and B2B SB copies are capped at their breakeven x the non-rank share, never raised, like the SP copies. paused: keywords and targets of paused SB campaigns are priced too, cut only.",
+    "keywords_per_campaign": 8,
+    "sb_cvr_ratio": 0.78,
+    "_sb_cvr_ratio_note": "What a Sponsored Brands click converts at, against a Sponsored Products click on the same search. MAP SQL over the AI products, 90 days to 2026-10-24: Sponsored Brands video exact 12.7% (3,167 clicks, 403 orders, 83% ACOS) against Sponsored Products exact 16.4%, so 0.78. An SB keyword's prior is its search's conversion x this, and an invest search's SB bid is its Sponsored Products invest bid x this (Kim, 2026-10-25, decision 135: \"let's optimise sponsored brands bids at its own cvr\"). It replaced sb_cpc_ratio 1.2 (what a video click cost against an SP click, $0.98 vs $0.83, 90 days to 2026-10-17), which priced SB above SP although SB converts worse. Re-measure quarterly.",
+    "sb_rank_ratio": 1.0,
+    "_sb_rank_ratio_note": "An invest (rank) search's Sponsored Brands keyword bids its Sponsored Products invest bid x this, not x sb_cvr_ratio: the rank push keeps bidding to be visible in Sponsored Brands too (Kim, 2026-10-25, decision 135: 'be sure to continue spending and bidding more for the rank investment keywords'). Kim chose 1.0 (\"Full SP bid on rank searches\") on a decision card, 2026-10-26 00:23 SGT, over 0.78 (rank SB priced like every other SB keyword) and 1.2 (what it was).",
+    "min_bid": 0.25,
+    "_min_bid_note": "Amazon's lowest Sponsored Brands keyword bid on YourBrand US: bids under $0.25 were rejected on 2026-10-20 (logs/2026-10-20-seasonal-plan-applied.md). No SB bid is planned under it.",
+    "default_budget": 10,
+    "portfolio_name": "3. Video Ads - Normal Bids",
+    "portfolio_id": "900000000000010",
+    "si_strategy": 302500,
+    "_si_strategy_note": "144 Brand video exact owners - never blocked, optimum hours. Created and re-opened to verify 2026-10-22 SGT during Kim-approved four-ASIN completion: no bid, import, negative or negative-word rules; blacklist off; dayparting203. Assign only to AI video exact owners after sync; remove any direct blacklist override."
+  },
+  "notify": {
+    "_note": "The run's one Slack message (scripts/notify.py; autonomous runs, Kim 2026-10-22, decision 98): a recap of what the run did, tagging the book owner, and a 'For human' section for what it parked, tagging who decides (price and Scale Insights beyond the standard setup: Kim; listing, image, offer or cutting a product: Lee; the rest: the book owner). Nothing is parked for money (decisions 99 and 100): the recap says 'Planned invest $X/month (above the $2,000 guide)' when the plan is above auto.invest_guide_month, 'Past the product's $X/month invest band: <searches>' and 'Modelled to lose over the $60/month line for one search: <search> ($X/month)' when an Auto promotion is past them. The agent posts it with the Slack connector; notify.py only prints it. Book owner: the product file's registry.book_owner, else book_owners here, else the owner column of tiers_csv (from the repo root), else fallback_owner. book_owners: the products the book list doesn't name (Sam's seasonal stickers and tattoos, docs/sweep-playbook.md roles, 2026-10-22). growth_*: when the run raised a listing pass, notify.py also prints a 'growth' message for growth_channel_id (#3-marketing-traffic) and the Monday move (the product's item on board growth_monday_board, found by its ASIN, set to growth_monday_status FIRST and then moved into group growth_monday_group (a board automation moves an item set to Optimise Listing into First Listing Optimization, found 2026-10-25); with no item there, growth_monday_if_missing 'create' adds one in that group; Kim 2026-10-25) that tells Growth (Kim 2026-10-25, decision 124; references/for-growth.md, 'Telling Growth').",
+    "channel": "#3d-ppc-standup",
+    "channel_id": "C0EXAMPLE01",
+    "growth_channel": "#3-marketing-traffic",
+    "growth_channel_id": "C0EXAMPLE02",
+    "growth_monday_board": 9000000011,
+    "growth_monday_group": "new_group3973",
+    "growth_monday_group_title": "[GROWTH TEAM] - For Listing Optimisation",
+    "growth_monday_status": "Optimise Listing",
+    "growth_monday_if_missing": "create",
+    "dashboard_url": "https://your-dashboard.example.com/#/",
+    "people": {
+      "Kim": "U0EXAMPLE03",
+      "Lee": "U0EXAMPLE04",
+      "Alex": "U0EXAMPLE05",
+      "Sam": "U0EXAMPLE06"
+    },
+    "fallback_owner": "Lee",
+    "book_owners": {
+      "B0SAMP0009": "Sam",
+      "B0SAMP0010": "Sam"
+    },
+    "tiers_csv": "docs/sweep-tiers.csv"
+  }
+}

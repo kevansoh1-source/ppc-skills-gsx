@@ -1,0 +1,6 @@
+{
+  "name": "amazon-ppc-ai-bidding",
+  "description": "AI-managed Amazon PPC bidding, one ASIN per run: onboarding, weekly bidding from SQP conversion and breakeven, rank investment with stop-loss, Sponsored Brands video, harvest and negatives.",
+  "version": "1.0.0",
+  "author": { "name": "kevansoh1-source" }
+}

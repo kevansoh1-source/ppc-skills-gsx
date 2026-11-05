@@ -7,9 +7,15 @@
   "plugins": [
     {
       "name": "amazon-negative-keyword-audit",
-      "source": "./",
+      "source": "./plugins/amazon-negative-keyword-audit",
       "description": "Weekly negative-keyword audit for Amazon Sponsored Products and Sponsored Brands.",
       "version": "10.0.0"
+    },
+    {
+      "name": "amazon-ppc-ai-bidding",
+      "source": "./plugins/amazon-ppc-ai-bidding",
+      "description": "AI-managed Amazon PPC bidding, one ASIN per run.",
+      "version": "1.0.0"
     }
   ]
 }

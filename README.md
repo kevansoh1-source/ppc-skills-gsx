@@ -1,22 +1,21 @@
-# Amazon Negative Keyword Audit (a Claude skill)
+# Amazon PPC skills for Claude
 
-A skill that teaches Claude to run a careful weekly negative-keyword audit on Amazon Sponsored
-Products and Sponsored Brands ads. It:
+Two skills that teach Claude to run Amazon Sponsored Products and Sponsored Brands ads the way a
+real seller account runs them. Both change nothing on Amazon until a person has seen the plan.
 
-- finds search terms that cost money and never sell, across every product in one run;
-- protects terms that do sell (from the ad reports and from Search Query Performance), so it
-  doesn't block real demand;
-- flags negatives that are already live but too broad (like `the` or the product's own name);
-- puts everything in an approval sheet, and changes nothing until you approve it.
+| Skill | What it does |
+|---|---|
+| **Negative keyword audit** | Finds search terms that cost money and never sell, protects the ones that do, flags negatives that are too broad, and puts everything in an approval sheet. |
+| **PPC AI bidding** | Runs one product's ads per run: bids each keyword from its own Search Query Performance conversion and breakeven, invests in rank on smaller searches with stop-loss checks, harvests new keywords, and handles Sponsored Brands video. It is the full system of a live account, so it is large; read its `SKILL.md` and `references/field-guide.md` to see how it works. |
 
 ## What you need
 
-- **Claude** with the **MarketplaceAdPros** connector (for Amazon Ads data and changes).
-- Optional: the **Scale Insights** connector and web app (blacklist and Search Query Performance),
-  **Google Drive** (approval sheets), **Slack** (a recap after each run).
+- **Claude** with the **MarketplaceAdPros** connector (Amazon Ads data and changes).
+- Optional: the **Scale Insights** connector and web app, **Google Drive**, **Slack**.
+- The bidding skill's scripts need **Python 3** (Claude Code, or the Claude app with code execution on).
 
-The skill asks for your own account details on its first run. Nothing about anyone else's account
-is in this repo.
+Nothing about anyone else's account is in this repo: product files, IDs and team details were
+taken out, and names and ASINs in examples are placeholders.
 
 ---
 
@@ -26,8 +25,9 @@ Pick the one that matches how you use Claude.
 
 ### A. Claude app or claude.ai (website, desktop app)
 
-1. On this page, click the file **`amazon-negative-keyword-audit.zip`** in the file list above,
-   then click the **download button** (the arrow pointing down, top right of the file view).
+1. On this page, click the zip for the skill you want in the file list above:
+   **`amazon-negative-keyword-audit.zip`** or **`amazon-ppc-ai-bidding.zip`**.
+   Then click the **download button** (the arrow pointing down, top right of the file view).
    Don't unzip it.
 2. Open Claude (the app or https://claude.ai).
 3. Click your **name or initials** at the bottom left, then **Settings**.
@@ -37,6 +37,8 @@ Pick the one that matches how you use Claude.
 7. Choose the zip file you downloaded (usually in your **Downloads** folder).
 8. Make sure the new skill's switch is **on**.
 
+Repeat for the second zip if you want both.
+
 ### B. Claude Code (the terminal app)
 
 1. Open Claude Code the way you normally do (type `claude` in your terminal and press Enter).
@@ -44,37 +46,35 @@ Pick the one that matches how you use Claude.
    ```
    /plugin marketplace add kevansoh1-source/amazon-negative-keyword-audit
    ```
-3. Then type this and press Enter:
+3. Then type one or both of these, pressing Enter after each:
    ```
    /plugin install amazon-negative-keyword-audit@amazon-ppc-skills
+   /plugin install amazon-ppc-ai-bidding@amazon-ppc-skills
    ```
 4. Close Claude Code and open it again.
 
 ---
 
-## How to use it
+## How to use them
 
 In a new chat, type something like:
 
 > Run a negative keyword audit for ASIN B0XXXXXXXX
 
-or, for many products at once:
+> Run the PPC AI bidding audit for ASIN B0XXXXXXXX (preview only)
 
-> Run a negative keyword audit for these ASINs: B0XXXXXXXX, B0YYYYYYYY, B0ZZZZZZZZ
-
-On the first run Claude asks a few setup questions (which tools you use, where approval sheets
-go). It then shows you the proposed negatives in a sheet. **Delete the rows you don't want**;
-the rows you leave are what gets applied. Nothing changes on Amazon before that.
+On the first run Claude asks for your account details. The negative audit shows its proposals in a
+sheet: **delete the rows you don't want**, and the rows you leave are what gets applied. With the
+bidding skill, say "preview only" until you have set up `config.json` with your own IDs and read
+how it decides.
 
 ## What's inside
 
-| File | What it does |
+| Path | What it is |
 |---|---|
-| `skills/amazon-negative-keyword-audit/SKILL.md` | The audit method Claude follows |
-| `skills/amazon-negative-keyword-audit/references/connectors.md` | Exact queries and tool calls |
-| `skills/amazon-negative-keyword-audit/scripts/negkw-local.js` | Helper that de-duplicates terms and builds the word table (Node.js) |
-| `skills/amazon-negative-keyword-audit/data/fingerprints.example.json` | Template for the product notes the skill keeps |
-| `amazon-negative-keyword-audit.zip` | The same skill, packed for upload to the Claude app |
+| `plugins/amazon-negative-keyword-audit/skills/…` | The negative audit: method, queries, helper script |
+| `plugins/amazon-ppc-ai-bidding/skills/…` | The bidding skill: method, rulebook, field guide, Python scripts and their tests |
+| `amazon-negative-keyword-audit.zip`, `amazon-ppc-ai-bidding.zip` | The same skills, packed for upload to the Claude app |
 
 ## Updating
 
