@@ -1,6 +1,9 @@
 {
   "name": "amazon-ppc-skills",
-  "owner": { "name": "kevansoh1-source" },
+  "description": "Amazon PPC skills for Claude.",
+  "owner": {
+    "name": "kevansoh1-source"
+  },
   "plugins": [
     {
       "name": "amazon-negative-keyword-audit",
