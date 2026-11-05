@@ -1,0 +1,5 @@
+{
+  "name": "amazon-negative-keyword-audit",
+  "description": "Weekly negative-keyword audit for Amazon Sponsored Products and Sponsored Brands: finds wasted search terms, protects terms that convert, flags over-broad live negatives, and applies only what you approve.",
+  "version": "10.0.0"
+}

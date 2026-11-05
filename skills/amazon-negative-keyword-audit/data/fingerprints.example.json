@@ -1,0 +1,15 @@
+{
+  "_note": "One entry per ASIN. Copy this file to fingerprints.json (same folder) on the first run; the skill fills in the products it audits. The entry below is a made-up example, not a real product.",
+  "B0EXAMPLE01": {
+    "product": "24 assorted thank-you cards with envelopes, 4x6 inch, folded",
+    "contents": "24 cards, 24 envelopes, 6 designs x 4",
+    "size": "4x6 inch",
+    "format": "folded, printed front, blank inside with fill-in lines",
+    "audience": "adults, general",
+    "occasions": ["thank you", "wedding", "baby shower"],
+    "envelopes": true,
+    "pack_count": 24,
+    "off_categories": ["christmas", "birthday", "sympathy", "kids", "postcards", "stickers"],
+    "derived_from": "listing title + product page images, checked YYYY-MM-DD"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "amazon-ppc-skills",
+  "owner": { "name": "kevansoh1-source" },
+  "plugins": [
+    {
+      "name": "amazon-negative-keyword-audit",
+      "source": "./",
+      "description": "Weekly negative-keyword audit for Amazon Sponsored Products and Sponsored Brands.",
+      "version": "10.0.0"
+    }
+  ]
+}
