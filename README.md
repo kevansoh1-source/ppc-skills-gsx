@@ -44,7 +44,7 @@ Repeat for the second zip if you want both.
 1. Open Claude Code the way you normally do (type `claude` in your terminal and press Enter).
 2. In the Claude Code chat box, type this and press Enter:
    ```
-   /plugin marketplace add kevansoh1-source/amazon-negative-keyword-audit
+   /plugin marketplace add kevansoh1-source/ppc-skills-gsx
    ```
 3. Then type one or both of these, pressing Enter after each:
    ```
